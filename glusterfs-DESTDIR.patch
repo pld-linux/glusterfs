@@ -1,0 +1,11 @@
+--- glusterfs-1.2.3/glusterfs-fuse/src/Makefile.in~	2007-01-19 00:58:46.000000000 +0000
++++ glusterfs-1.2.3/glusterfs-fuse/src/Makefile.in	2007-03-14 22:10:23.152209000 +0000
+@@ -425,7 +425,7 @@ uninstall-am: uninstall-sbinPROGRAMS
+ 
+ 
+ install-data-local:
+-	mkdir -p $(localstatedir)/log/glusterfs/
++	mkdir -p $(DESTDIR)$(localstatedir)/log/glusterfs/
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
