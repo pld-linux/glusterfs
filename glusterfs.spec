@@ -1,13 +1,13 @@
+# TODO: Package examples ?
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	1.2.3
+Version:	1.3.7
 Release:	0.1
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://ftp.zresearch.com/pub/gluster/glusterfs/1.2/%{name}-%{version}.tar.gz
-# Source0-md5:	f0a545f10176a77d93472b64db061781
-Patch0:		%{name}-DESTDIR.patch
+Source0:	http://ftp.zresearch.com/pub/gluster/glusterfs/1.3/%{name}-%{version}.tar.gz
+# Source0-md5:	ede5fe1e17e7c333536400e138a084f1
 URL:		http://gluster.org/glusterfs.php
 BuildRequires:	bison
 BuildRequires:	flex
@@ -36,10 +36,10 @@ jest łatwo zarządzalna.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
-%configure
+%configure \
+	--disable-ibverbs
 %{__make}
 
 %install
@@ -53,13 +53,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README
-%attr(755,root,root) %{_libdir}/*.so
+%doc AUTHORS ChangeLog NEWS README 
+%attr(755,root,root) %{_libdir}/*.so.*
 %dir %{_libdir}/glusterfs/*
-# XXX: dup (%dir for some *.so)
-%attr(755,root,root) %{_libdir}/glusterfs/*/*so
 %dir %{_libdir}/glusterfs/*/*
 %attr(755,root,root) %{_libdir}/glusterfs/*/*/*so
+%dir %{_libdir}/glusterfs/*/*/*
+%attr(755,root,root) %{_libdir}/glusterfs/*/*/*/*so
+
 %attr(755,root,root) %{_sbindir}/*
 %{_sysconfdir}/%{name}/%{name}*
 %attr(755,root,root) /sbin/mount.*
