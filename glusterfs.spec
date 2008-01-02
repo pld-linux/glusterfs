@@ -138,8 +138,8 @@ rm -rf $RPM_BUILD_ROOT
 %files common
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog COPYING INSTALL NEWS README
-
 %attr(755,root,root) %{_libdir}/libglusterfs.so.*
+%dir %{_libdir}/glusterfs
 %dir %{_libdir}/glusterfs/%{version}
 %dir %{_libdir}/glusterfs/%{version}/scheduler
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/scheduler/*.so
