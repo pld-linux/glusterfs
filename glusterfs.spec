@@ -1,13 +1,17 @@
 # TODO: package docs
+# TODO: Fix init scripts
+# 	They work as expected, pid file contains correct pid, 
+#	but status and stop whip about daemon being dead.
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
 Version:	1.3.7
-Release:	0.2
+Release:	1
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://ftp.zresearch.com/pub/gluster/glusterfs/1.3/%{name}-%{version}.tar.gz
 # Source0-md5:	ede5fe1e17e7c333536400e138a084f1
+Source1:	glusterfsd.init
 URL:		http://gluster.org/glusterfs.php
 BuildRequires:	bison
 BuildRequires:	flex
@@ -126,13 +130,14 @@ Pliki i biblioteki potrzebne do rozwoju GlusterFS.
 %install
 rm -rf $RPM_BUILD_ROOT
 
+install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/glusterfsd
+
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
-##%{_sysconfdir}/%{name}/%{name}*
 
 
 %files common
@@ -149,10 +154,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/glusterfs/%{version}/xlator/*
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/*/*.so
 
-##%dir %{_libdir}/glusterfs/%{version}/*
-##%dir %{_libdir}/glusterfs/%{version}/*/*
-##%attr(755,root,root) %{_libdir}/glusterfs/%{version}/*/*/*.so
-##%attr(755,root,root) %{_libdir}/glusterfs/*/*/*/*so
 %dir /var/log/glusterfs
 
 
@@ -161,6 +162,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog COPYING INSTALL NEWS README
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*
+%attr(754,root,root) /etc/rc.d/init.d/glusterfsd
 %attr(755,root,root) %{_sbindir}/glusterfsd
 
 
