@@ -1,10 +1,13 @@
-# TODO: package docs
+#
+# Conditional build:
+%bcond_with	ibverbs		# ib-verbs transport
+#
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
 Version:	1.3.7
 Release:	1
-License:	GPL v2
+License:	GPL v3+
 Group:		Applications/System
 Source0:	http://ftp.zresearch.com/pub/gluster/glusterfs/1.3/%{name}-%{version}.tar.gz
 # Source0-md5:	ede5fe1e17e7c333536400e138a084f1
@@ -12,7 +15,8 @@ Source1:	glusterfsd.init
 URL:		http://gluster.org/glusterfs.php
 BuildRequires:	bison
 BuildRequires:	flex
-BuildRequires:	libfuse-devel
+BuildRequires:	libfuse-devel >= 2.6
+%{?with_ibverbs:BuildRequires:	libibverbs-devel >= 1.0.4}
 BuildRequires:	rpmbuild(macros) >= 1.228
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -82,6 +86,7 @@ Summary:	GlusterFS Client
 Summary(pl.UTF-8):	Klient GlusterFS
 Group:		Applications/System
 Requires:	%{name}-common = %{version}-%{release}
+Requires:	libfuse >= 2.6
 
 %description client
 This package provides the FUSE based GlusterFS client.
@@ -96,11 +101,10 @@ Group:		Development/Libraries
 Requires:	%{name}-common = %{version}-%{release}
 
 %description devel
-This package provides the development header files for GlusterFS
-library.
+This package provides the development files for GlusterFS library.
 
 %description devel -l pl.UTF-8
-Ten pakiet udostępnia pliki nagłówkowe biblioteki GlusterFS-a.
+Ten pakiet udostępnia pliki programistyczne biblioteki GlusterFS-a.
 
 %package static
 Summary:	Static GlusterFS library
@@ -117,9 +121,11 @@ Statyczna biblioteka GlusterFS-a.
 %prep
 %setup -q
 
+cp -l doc/examples/README README.examples
+
 %build
 %configure \
-	--disable-ibverbs
+	%{!?with_ibverbs:--disable-ibverbs}
 %{__make}
 
 %install
@@ -131,12 +137,14 @@ install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/glusterfsd
 
+rm -r $RPM_BUILD_ROOT%{_docdir}/glusterfs/examples
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files common
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog COPYING INSTALL NEWS README
+%doc AUTHORS ChangeLog COPYING INSTALL NEWS README README.examples doc/*.vol.sample doc/examples/*.vol
 %attr(755,root,root) %{_libdir}/libglusterfs.so.*
 %dir %{_libdir}/glusterfs
 %dir %{_libdir}/glusterfs/%{version}
@@ -165,7 +173,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libglusterfs.so
 %{_libdir}/libglusterfs.la
-##%{_includedir}/*.h
+#%{_includedir}/*.h
 
 %files static
 %defattr(644,root,root,755)
