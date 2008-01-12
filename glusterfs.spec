@@ -1,7 +1,4 @@
 # TODO: package docs
-# TODO: Fix init scripts
-# 	They work as expected, pid file contains correct pid, 
-#	but status and stop whip about daemon being dead.
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
@@ -17,7 +14,6 @@ BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libfuse-devel
 BuildRequires:	rpmbuild(macros) >= 1.228
-Requires(post,preun):	/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -30,7 +26,6 @@ Translators from GNU Hurd kernel. Much of the code in GlusterFS is in
 userspace and easily manageable.
 
 %description -l pl.UTF-8
-
 GlusterFS to klastrowy system plików skalujący się do petabajtów.
 Scala różne kawałki miejsca po łączach Infiniband RDMA lub TCP/IP
 w jeden duży, równoległy sieciowy system plików. GlusterFS to
@@ -41,7 +36,8 @@ przestrzeni użytkownika i jest łatwo zarządzalna.
 
 %package common
 Summary:	GlusterFS Library and Translators
-Group:		Applications/System
+Summary(pl.UTF-8):	Biblioteka i translatory GlusterFS-a
+Group:		Libraries
 
 %description common
 GlusterFS is a clustered file-system capable of scaling to several
@@ -56,68 +52,67 @@ This package includes libglusterfs and glusterfs translator modules
 common to both GlusterFS server and client framework.
 
 %description common -l pl.UTF-8
-Pakiet zawiera libglusterfs i moduly translatorow glusterfs wspolne
-dla klienta jak i serwera GlusterFS.
+GlusterFS to klastrowy system plików skalujący się do petabajtów.
+Scala różne kawałki miejsca po łączach Infiniband RDMA lub TCP/IP
+w jeden duży, równoległy sieciowy system plików. GlusterFS to
+jeden z najbardziej wyszukanych systemów plików jeśli chodzi o
+możliwości i rozszerzalność. Zapożycza potężną ideę o nazwie
+Translators z jądra GNU Hurd. Duża część kodu GlusterFS działa w
+przestrzeni użytkownika i jest łatwo zarządzalna.
+
+Ten pakiet zawiera libglusterfs i moduły translatorów glusterfs
+wspólne dla klienta jak i serwera GlusterFS-a.
 
 %package server
 Summary:	GlusterFS Server
-Group:		Applications/System
-Requires:	%{name}-common = %{version}
-
+Summary(pl.UTF-8):	Serwer GlusterFS-a
+Group:		Daemons
+Requires:	%{name}-common = %{version}-%{release}
+Requires(post,preun):	/sbin/chkconfig
+Requires:	rc-scripts
 
 %description server
-GlusterFS is a clustered file-system capable of scaling to several
-peta-bytes. It aggregates various storage bricks over Infiniband RDMA
-or TCP/IP interconnect into one large parallel network file system.
-GlusterFS is one of the most sophisticated file system in terms of
-features and extensibility. It borrows a powerful concept called
-Translators from GNU Hurd kernel. Much of the code in GlusterFS is in
-userspace and easily manageable.
-
 This package provides the glusterfs server daemon.
 
 %description server -l pl.UTF-8
-Pakiet zawiera czesc serwerowa GlusterFS.
-
+Ten pakiet zawiera część serwerową GlusterFS-a.
 
 %package client
 Summary:	GlusterFS Client
+Summary(pl.UTF-8):	Klient GlusterFS
 Group:		Applications/System
-Requires:	%{name}-common = %{version}
+Requires:	%{name}-common = %{version}-%{release}
 
 %description client
-GlusterFS is a clustered file-system capable of scaling to several
-peta-bytes. It aggregates various storage bricks over Infiniband RDMA
-or TCP/IP interconnect into one large parallel network file system.
-GlusterFS is one of the most sophisticated file system in terms of
-features and extensibility. It borrows a powerful concept called
-Translators from GNU Hurd kernel. Much of the code in GlusterFS is in
-userspace and easily manageable.
-
 This package provides the FUSE based GlusterFS client.
 
 %description client -l pl.UTF-8
-Pliki bazujacego na FUSE klienta GlusterFS.
+Ten pakiet udostępnia opartego na FUSE klienta GlusterFS-a.
 
 %package devel
-Summary:	GlusterFS Development Libraries
+Summary:	GlusterFS development files
+Summary(pl.UTF-8):	Pliki programistyczne GlusterFS-a
 Group:		Development/Libraries
-Requires:	%{name}-common = %{version}
+Requires:	%{name}-common = %{version}-%{release}
 
 %description devel
-GlusterFS is a clustered file-system capable of scaling to several
-peta-bytes. It aggregates various storage bricks over Infiniband RDMA
-or TCP/IP interconnect into one large parallel network file system.
-GlusterFS is one of the most sophisticated file system in terms of
-features and extensibility. It borrows a powerful concept called
-Translators from GNU Hurd kernel. Much of the code in GlusterFS is in
-userspace and easily manageable.
-
-This package provides the development libraries.
+This package provides the development header files for GlusterFS
+library.
 
 %description devel -l pl.UTF-8
-Pliki i biblioteki potrzebne do rozwoju GlusterFS.
+Ten pakiet udostępnia pliki nagłówkowe biblioteki GlusterFS-a.
 
+%package static
+Summary:	Static GlusterFS library
+Summary(pl.UTF-8):	Statyczna biblioteka GlusterFS-a
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description static
+Static GlusterFS library.
+
+%description static -l pl.UTF-8
+Statyczna biblioteka GlusterFS-a.
 
 %prep
 %setup -q
@@ -129,16 +124,15 @@ Pliki i biblioteki potrzebne do rozwoju GlusterFS.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/glusterfsd
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/glusterfsd
+
 %clean
 rm -rf $RPM_BUILD_ROOT
-
 
 %files common
 %defattr(644,root,root,755)
@@ -153,28 +147,26 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/glusterfs/%{version}/xlator
 %dir %{_libdir}/glusterfs/%{version}/xlator/*
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/*/*.so
-
 %dir /var/log/glusterfs
-
 
 %files server
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog COPYING INSTALL NEWS README
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*
 %attr(754,root,root) /etc/rc.d/init.d/glusterfsd
 %attr(755,root,root) %{_sbindir}/glusterfsd
 
-
 %files client
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog COPYING INSTALL NEWS README
 %attr(755,root,root) %{_sbindir}/glusterfs
 %attr(755,root,root) /sbin/mount.glusterfs
 
 %files devel
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog COPYING INSTALL NEWS README THANKS
-%{_libdir}/libglusterfs.a
+%attr(755,root,root) %{_libdir}/libglusterfs.so
 %{_libdir}/libglusterfs.la
 ##%{_includedir}/*.h
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/libglusterfs.a
