@@ -1,6 +1,6 @@
 #
 # Conditional build:
-%bcond_with	ibverbs		# ib-verbs transport
+%bcond_without	ibverbs		# ib-verbs transport
 #
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
@@ -12,10 +12,14 @@ Group:		Applications/System
 Source0:	http://ftp.zresearch.com/pub/gluster/glusterfs/1.3/%{name}-%{version}.tar.gz
 # Source0-md5:	ede5fe1e17e7c333536400e138a084f1
 Source1:	glusterfsd.init
+Patch0:		%{name}-link.patch
 URL:		http://gluster.org/glusterfs.php
+BuildRequires:	autoconf >= 2.50
+BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libfuse-devel >= 2.6
+BuildRequires:	libtool
 %{?with_ibverbs:BuildRequires:	libibverbs-devel >= 1.0.4}
 BuildRequires:	rpmbuild(macros) >= 1.228
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -67,6 +71,43 @@ przestrzeni użytkownika i jest łatwo zarządzalna.
 Ten pakiet zawiera libglusterfs i moduły translatorów glusterfs
 wspólne dla klienta jak i serwera GlusterFS-a.
 
+%package devel
+Summary:	GlusterFS development files
+Summary(pl.UTF-8):	Pliki programistyczne GlusterFS-a
+Group:		Development/Libraries
+Requires:	%{name}-common = %{version}-%{release}
+
+%description devel
+This package provides the development files for GlusterFS library.
+
+%description devel -l pl.UTF-8
+Ten pakiet udostępnia pliki programistyczne biblioteki GlusterFS-a.
+
+%package static
+Summary:	Static GlusterFS library
+Summary(pl.UTF-8):	Statyczna biblioteka GlusterFS-a
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description static
+Static GlusterFS library.
+
+%description static -l pl.UTF-8
+Statyczna biblioteka GlusterFS-a.
+
+%package transport-ibverbs
+Summary:	InfiniBand "verbs" transport plugins for GlusterFS
+Summary(pl.UTF-8):	Wtyczki transportu "verbs" InfiniBand dla GlusterFS-a
+Group:		Libraries
+Requires:	%{name}-common = %{version}-%{release}
+Requires:	libibverbs >= 1.0.4
+
+%description transport-ibverbs
+InfiniBand "verbs" transport plugins for GlusterFS.
+
+%description transport-ibverbs -l pl.UTF-8
+Wtyczki transportu "verbs" InfiniBand dla GlusterFS-a.
+
 %package server
 Summary:	GlusterFS Server
 Summary(pl.UTF-8):	Serwer GlusterFS-a
@@ -94,36 +135,17 @@ This package provides the FUSE based GlusterFS client.
 %description client -l pl.UTF-8
 Ten pakiet udostępnia opartego na FUSE klienta GlusterFS-a.
 
-%package devel
-Summary:	GlusterFS development files
-Summary(pl.UTF-8):	Pliki programistyczne GlusterFS-a
-Group:		Development/Libraries
-Requires:	%{name}-common = %{version}-%{release}
-
-%description devel
-This package provides the development files for GlusterFS library.
-
-%description devel -l pl.UTF-8
-Ten pakiet udostępnia pliki programistyczne biblioteki GlusterFS-a.
-
-%package static
-Summary:	Static GlusterFS library
-Summary(pl.UTF-8):	Statyczna biblioteka GlusterFS-a
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
-
-%description static
-Static GlusterFS library.
-
-%description static -l pl.UTF-8
-Statyczna biblioteka GlusterFS-a.
-
 %prep
 %setup -q
+%patch0 -p1
 
 cp -l doc/examples/README README.examples
 
 %build
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__automake}
 %configure \
 	%{!?with_ibverbs:--disable-ibverbs}
 %{__make}
@@ -145,17 +167,51 @@ rm -rf $RPM_BUILD_ROOT
 %files common
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog COPYING INSTALL NEWS README README.examples doc/*.vol.sample doc/examples/*.vol
-%attr(755,root,root) %{_libdir}/libglusterfs.so.*
+%attr(755,root,root) %{_libdir}/libglusterfs.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libglusterfs.so.0
 %dir %{_libdir}/glusterfs
 %dir %{_libdir}/glusterfs/%{version}
 %dir %{_libdir}/glusterfs/%{version}/scheduler
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/scheduler/*.so
 %dir %{_libdir}/glusterfs/%{version}/transport
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/transport/*/*.so
+%dir %{_libdir}/glusterfs/%{version}/transport/ib-sdp
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/transport/ib-sdp/client.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/transport/ib-sdp/server.so
+%dir %{_libdir}/glusterfs/%{version}/transport/tcp
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/transport/tcp/client.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/transport/tcp/server.so
 %dir %{_libdir}/glusterfs/%{version}/xlator
-%dir %{_libdir}/glusterfs/%{version}/xlator/*
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/*/*.so
+%dir %{_libdir}/glusterfs/%{version}/xlator/cluster
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/cluster/*.so
+%dir %{_libdir}/glusterfs/%{version}/xlator/debug
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/debug/*.so
+%dir %{_libdir}/glusterfs/%{version}/xlator/encryption
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/encryption/*.so
+%dir %{_libdir}/glusterfs/%{version}/xlator/features
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/features/*.so
+%dir %{_libdir}/glusterfs/%{version}/xlator/performance
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/performance/*.so
+%dir %{_libdir}/glusterfs/%{version}/xlator/protocol
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/protocol/*.so
+%dir %{_libdir}/glusterfs/%{version}/xlator/storage
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/storage/*.so
 %dir /var/log/glusterfs
+
+%files devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libglusterfs.so
+%{_libdir}/libglusterfs.la
+#%{_includedir}/*.h
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/libglusterfs.a
+
+%files transport-ibverbs
+%defattr(644,root,root,755)
+%dir %{_libdir}/glusterfs/%{version}/transport/ib-verbs
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/transport/ib-verbs/client.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/transport/ib-verbs/server.so
 
 %files server
 %defattr(644,root,root,755)
@@ -168,13 +224,3 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/glusterfs
 %attr(755,root,root) /sbin/mount.glusterfs
-
-%files devel
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libglusterfs.so
-%{_libdir}/libglusterfs.la
-#%{_includedir}/*.h
-
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/libglusterfs.a
