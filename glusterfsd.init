@@ -33,7 +33,7 @@ start() {
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/glusterfsd ]; then
 		msg_starting glusterfsd
-		daemon /usr/sbin/glusterfsd --pidfile=/var/run/glusterfsd.pid #
+		daemon /usr/sbin/glusterfsd --pidfile=/var/run/glusterfsd.pid  --spec-file /etc/glusterfs/glusterfs-server.vol
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/glusterfsd
 	else
