@@ -5,14 +5,13 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	1.3.7
-Release:	2
+Version:	1.3.9
+Release:	1
 License:	GPL v3+
 Group:		Applications/System
 Source0:	http://ftp.zresearch.com/pub/gluster/glusterfs/1.3/%{name}-%{version}.tar.gz
-# Source0-md5:	ede5fe1e17e7c333536400e138a084f1
+# Source0-md5:	6a4f46de3928e8c7ea9787b12b172a24
 Source1:	glusterfsd.init
-Patch0:		%{name}-link.patch
 URL:		http://gluster.org/glusterfs.php
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -137,7 +136,6 @@ Ten pakiet udostępnia opartego na FUSE klienta GlusterFS-a.
 
 %prep
 %setup -q
-%patch0 -p1
 
 cp -l doc/examples/README README.examples
 
@@ -171,7 +169,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libglusterfs.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libglusterfs.so.0
 %dir %{_libdir}/glusterfs
+%attr(755,root,root) %{_libdir}/glusterfs/glusterfs-booster.so
 %dir %{_libdir}/glusterfs/%{version}
+%dir %{_libdir}/glusterfs/%{version}/auth
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/auth/ip.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/auth/login.so
 %dir %{_libdir}/glusterfs/%{version}/scheduler
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/scheduler/*.so
 %dir %{_libdir}/glusterfs/%{version}/transport
@@ -181,6 +183,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/glusterfs/%{version}/transport/tcp
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/transport/tcp/client.so
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/transport/tcp/server.so
+%dir %{_libdir}/glusterfs/%{version}/transport/unix
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/transport/unix/client.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/transport/unix/server.so
 %dir %{_libdir}/glusterfs/%{version}/xlator
 %dir %{_libdir}/glusterfs/%{version}/xlator/cluster
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/cluster/*.so
@@ -190,12 +195,17 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/encryption/*.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/features
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/features/*.so
+%dir %{_libdir}/glusterfs/%{version}/xlator/mount
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/mount/fuse.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/performance
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/performance/*.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/protocol
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/protocol/*.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/storage
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/storage/*.so
+
+%{_mandir}/man8/*.8*
+
 %dir /var/log/glusterfs
 
 %files devel
