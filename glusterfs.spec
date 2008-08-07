@@ -1,3 +1,5 @@
+# TODO: Decide what to do with -static
+#       Obsolete it, fix build ?
 #
 # Conditional build:
 %bcond_without	ibverbs		# ib-verbs transport
@@ -6,7 +8,7 @@ Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
 Version:	1.3.10
-Release:	2
+Release:	3
 License:	GPL v3+
 Group:		Applications/System
 Source0:	http://ftp.zresearch.com/pub/gluster/glusterfs/1.3/%{name}-%{version}.tar.gz
