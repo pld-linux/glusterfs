@@ -1,0 +1,358 @@
+--- glusterfs-1.3.10/auth/ip/src/Makefile.am.link-fix	2008-08-07 15:55:18.000000000 +0000
++++ glusterfs-1.3.10/auth/ip/src/Makefile.am	2008-08-07 15:55:27.000000000 +0000
+@@ -18,6 +18,8 @@ auth_PROGRAMS = ip.so
+ authdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/auth
+ 
+ ip_so_SOURCES = ip.c
++ip_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
++
+ #noinst_HEADERS = alu.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+--- glusterfs-1.3.10/auth/login/src/Makefile.am.link-fix	2008-08-07 15:56:16.000000000 +0000
++++ glusterfs-1.3.10/auth/login/src/Makefile.am	2008-08-07 15:56:24.000000000 +0000
+@@ -18,6 +18,7 @@ auth_PROGRAMS = login.so
+ authdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/auth
+ 
+ login_so_SOURCES = login.c
++login_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
+ #noinst_HEADERS = alu.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+--- glusterfs-1.3.10/xlators/cluster/stripe/src/Makefile.am.link-fix	2008-08-07 13:24:55.000000000 +0000
++++ glusterfs-1.3.10/xlators/cluster/stripe/src/Makefile.am	2008-08-07 13:25:53.000000000 +0000
+@@ -18,8 +18,10 @@
+ xlator_PROGRAMS = stripe.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/cluster
+ 
++
+ stripe_so_SOURCES = stripe.c
+ #noinst_HEADERS = unify.h
++stripe_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/xlators/debug/trace/src/Makefile.am.link-fix	2008-08-07 15:01:25.000000000 +0000
++++ glusterfs-1.3.10/xlators/debug/trace/src/Makefile.am	2008-08-07 15:02:04.000000000 +0000
+@@ -19,6 +19,7 @@ xlator_PROGRAMS = trace.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/debug
+ 
+ trace_so_SOURCES = trace.c
++trace_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/xlators/features/trash/src/Makefile.am.link-fix	2008-08-07 15:14:50.000000000 +0000
++++ glusterfs-1.3.10/xlators/features/trash/src/Makefile.am	2008-08-07 15:15:00.000000000 +0000
+@@ -18,6 +18,7 @@ xlator_PROGRAMS = trash.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/features
+ 
+ trash_so_SOURCES = trash.c
++trash_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la 
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/xlators/features/filter/src/Makefile.am.link-fix	2008-08-07 15:08:55.000000000 +0000
++++ glusterfs-1.3.10/xlators/features/filter/src/Makefile.am	2008-08-07 15:09:08.000000000 +0000
+@@ -18,6 +18,8 @@ xlator_PROGRAMS = filter.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/features
+ 
+ filter_so_SOURCES = filter.c
++filter_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
++
+ noinst_HEADERS = filter.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+--- glusterfs-1.3.10/xlators/features/fixed-id/src/Makefile.am.link-fix	2008-08-07 15:11:53.000000000 +0000
++++ glusterfs-1.3.10/xlators/features/fixed-id/src/Makefile.am	2008-08-07 15:12:25.000000000 +0000
+@@ -18,6 +18,7 @@ xlator_PROGRAMS = fixed-id.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/features
+ 
+ fixed_id_so_SOURCES = fixed-id.c
++fixed_id_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la 
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS) \
+ 	-I$(top_srcdir)/libglusterfs/src -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/xlators/features/posix-locks/src/Makefile.am.link-fix	2008-08-07 15:13:48.000000000 +0000
++++ glusterfs-1.3.10/xlators/features/posix-locks/src/Makefile.am	2008-08-07 15:14:01.000000000 +0000
+@@ -18,6 +18,8 @@ xlator_PROGRAMS = posix-locks.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/features
+ 
+ posix_locks_so_SOURCES = posix-locks.c
++posix_locks_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la 
++
+ noinst_HEADERS = posix-locks.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS) \
+--- glusterfs-1.3.10/xlators/mount/fuse/src/Makefile.am.link-fix	2008-08-07 15:27:59.000000000 +0000
++++ glusterfs-1.3.10/xlators/mount/fuse/src/Makefile.am	2008-08-07 15:34:15.000000000 +0000
+@@ -20,12 +20,14 @@ noinst_HEADERS = fuse-extra.h 
+ xlator_PROGRAMS = fuse.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/mount
+ fuse_so_SOURCES = fuse-bridge.c fuse-extra.c
++
+ fuse_so_CFLAGS = -DFUSE_USE_VERSION=26 -fPIC -Wall -pthread \
+ 	$(GF_DARWIN_BUNDLE_CFLAGS) -I$(top_srcdir)/libglusterfs/src \
+ 	-D$(GF_HOST_OS) -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE  \
+ 	-DDATADIR=\"$(localstatedir)\" -DCONFDIR=\"$(sysconfdir)/glusterfs\"
+ fuse_so_LDFLAGS = -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+-fuse_so_LDADD = -lfuse $(GF_DARWIN_FUSE_LDADD)
++fuse_so_LDADD = -lfuse $(GF_DARWIN_FUSE_LDADD)  \
++		$(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ 
+ CLEANFILES = *~
+--- glusterfs-1.3.10/xlators/protocol/server/src/Makefile.am.link-fix	2008-08-07 13:58:00.000000000 +0000
++++ glusterfs-1.3.10/xlators/protocol/server/src/Makefile.am	2008-08-07 13:58:25.000000000 +0000
+@@ -19,6 +19,8 @@ xlator_PROGRAMS = server.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/protocol
+ 
+ server_so_SOURCES = server-protocol.c
++server_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
++
+ noinst_HEADERS = server-protocol.h 
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS) \
+--- glusterfs-1.3.10/xlators/storage/posix/src/Makefile.am.link-fix	2008-08-07 13:54:50.000000000 +0000
++++ glusterfs-1.3.10/xlators/storage/posix/src/Makefile.am	2008-08-07 13:56:27.000000000 +0000
+@@ -19,6 +19,8 @@ xlator_PROGRAMS = posix.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/storage
+ 
+ posix_so_SOURCES = posix.c 
++posix_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la 
++
+ noinst_HEADERS = posix.h 
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -D$(GF_HOST_OS) -Wall \
+--- glusterfs-1.3.10/xlators/encryption/rot-13/src/Makefile.am.link-fix	2008-08-07 15:17:28.000000000 +0000
++++ glusterfs-1.3.10/xlators/encryption/rot-13/src/Makefile.am	2008-08-07 15:17:42.000000000 +0000
+@@ -18,6 +18,8 @@ xlator_PROGRAMS = rot-13.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/encryption
+ 
+ rot_13_so_SOURCES = rot-13.c
++rot_13_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la 
++
+ noinst_HEADERS = rot-13.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS) \
+--- glusterfs-1.3.10/xlators/performance/write-behind/src/Makefile.am.link-fix	2008-08-07 14:42:08.000000000 +0000
++++ glusterfs-1.3.10/xlators/performance/write-behind/src/Makefile.am	2008-08-07 14:44:20.000000000 +0000
+@@ -18,6 +18,7 @@ xlator_PROGRAMS = write-behind.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/performance
+ 
+ write_behind_so_SOURCES = write-behind.c
++write_behind_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/xlators/performance/booster/src/Makefile.am.link-fix	2008-08-07 14:59:23.000000000 +0000
++++ glusterfs-1.3.10/xlators/performance/booster/src/Makefile.am	2008-08-07 14:59:52.000000000 +0000
+@@ -23,6 +23,7 @@ booster_so_CFLAGS = -fPIC -D_FILE_OFFSET
+ 	-I$(top_srcdir)/libglusterfs/src -shared -nostartfiles \
+ 	-D$(GF_HOST_OS) $(GF_DARWIN_BUNDLE_CFLAGS)
+ booster_so_LDFLAGS = -shared $(GF_DARWIN_BUNDLE_CFLAGS)
++booster_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ noinst_HEADERS = booster.h
+ 
+--- glusterfs-1.3.10/xlators/performance/io-cache/src/Makefile.am.link-fix	2008-08-07 14:57:50.000000000 +0000
++++ glusterfs-1.3.10/xlators/performance/io-cache/src/Makefile.am	2008-08-07 14:58:00.000000000 +0000
+@@ -18,6 +18,7 @@ xlator_PROGRAMS = io-cache.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/performance
+ 
+ io_cache_so_SOURCES = io-cache.c page.c ioc-inode.c
++io_cache_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ noinst_HEADERS = io-cache.h
+ 
+--- glusterfs-1.3.10/xlators/performance/read-ahead/src/Makefile.am.link-fix	2008-08-07 14:54:44.000000000 +0000
++++ glusterfs-1.3.10/xlators/performance/read-ahead/src/Makefile.am	2008-08-07 14:55:16.000000000 +0000
+@@ -19,6 +19,8 @@ xlatordir = $(libdir)/glusterfs/$(PACKAG
+ 
+ read_ahead_so_SOURCES = read-ahead.c page.c
+ 
++read_ahead_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
++
+ noinst_HEADERS = read-ahead.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+--- glusterfs-1.3.10/xlators/performance/io-threads/src/Makefile.am.link-fix	2008-08-07 14:56:15.000000000 +0000
++++ glusterfs-1.3.10/xlators/performance/io-threads/src/Makefile.am	2008-08-07 14:56:31.000000000 +0000
+@@ -18,6 +18,8 @@ xlator_PROGRAMS = io-threads.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/performance
+ 
+ io_threads_so_SOURCES = io-threads.c
++io_threads_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
++
+ noinst_HEADERS = io-threads.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+--- glusterfs-1.3.10/transport/tcp/client/src/Makefile.am.link-fix	2008-08-07 15:46:26.000000000 +0000
++++ glusterfs-1.3.10/transport/tcp/client/src/Makefile.am	2008-08-07 15:46:36.000000000 +0000
+@@ -18,6 +18,7 @@ transport_PROGRAMS = client.so
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/tcp/
+ 
+ client_so_SOURCES = tcp-client.c $(top_srcdir)/transport/tcp/tcp.c
++client_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/tcp/ -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/transport/tcp/server/src/Makefile.am.link-fix	2008-08-07 15:47:11.000000000 +0000
++++ glusterfs-1.3.10/transport/tcp/server/src/Makefile.am	2008-08-07 15:47:21.000000000 +0000
+@@ -18,6 +18,7 @@ transport_PROGRAMS = server.so
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/tcp/
+ 
+ server_so_SOURCES = tcp-server.c $(top_srcdir)/transport/tcp/tcp.c
++server_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/tcp/ -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/transport/ib-sdp/client/src/Makefile.am.link-fix	2008-08-07 15:48:34.000000000 +0000
++++ glusterfs-1.3.10/transport/ib-sdp/client/src/Makefile.am	2008-08-07 15:48:42.000000000 +0000
+@@ -18,6 +18,7 @@ transport_PROGRAMS = client.so
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/ib-sdp
+ 
+ client_so_SOURCES = ib-sdp-client.c $(top_srcdir)/transport/ib-sdp/ib-sdp.c
++client_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/ib-sdp -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/transport/ib-sdp/server/src/Makefile.am.link-fix	2008-08-07 15:49:43.000000000 +0000
++++ glusterfs-1.3.10/transport/ib-sdp/server/src/Makefile.am	2008-08-07 15:49:52.000000000 +0000
+@@ -18,6 +18,7 @@ transport_PROGRAMS = server.so
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/ib-sdp
+ 
+ server_so_SOURCES = ib-sdp-server.c $(top_srcdir)/transport/ib-sdp/ib-sdp.c
++server_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/ib-sdp -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/transport/ib-verbs/client/src/Makefile.am.link-fix	2008-08-07 15:53:35.000000000 +0000
++++ glusterfs-1.3.10/transport/ib-verbs/client/src/Makefile.am	2008-08-07 15:53:47.000000000 +0000
+@@ -18,7 +18,7 @@ transport_PROGRAMS = client.so
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/ib-verbs
+ 
+ client_so_SOURCES = ib-verbs-client.c $(top_srcdir)/transport/ib-verbs/ib-verbs.c
+-client_so_LDADD = -libverbs
++client_so_LDADD = -libverbs $(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/ib-verbs -shared -nostartfiles
+--- glusterfs-1.3.10/transport/ib-verbs/server/src/Makefile.am.link-fix	2008-08-07 15:52:18.000000000 +0000
++++ glusterfs-1.3.10/transport/ib-verbs/server/src/Makefile.am	2008-08-07 15:52:33.000000000 +0000
+@@ -18,7 +18,7 @@ transport_PROGRAMS = server.so
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/ib-verbs
+ 
+ server_so_SOURCES = ib-verbs-server.c $(top_srcdir)/transport/ib-verbs/ib-verbs.c
+-server_so_LDADD = -libverbs
++server_so_LDADD = -libverbs $(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/ib-verbs -shared -nostartfiles
+--- glusterfs-1.3.10/scheduler/nufa/src/Makefile.am.link-fix	2008-08-07 15:39:37.000000000 +0000
++++ glusterfs-1.3.10/scheduler/nufa/src/Makefile.am	2008-08-07 15:40:07.000000000 +0000
+@@ -18,6 +18,8 @@ sched_PROGRAMS = nufa.so
+ scheddir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/scheduler
+ 
+ nufa_so_SOURCES = nufa.c
++nufa_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
++
+ noinst_HEADERS = nufa.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+--- glusterfs-1.3.10/scheduler/rr/src/Makefile.am.link-fix	2008-08-07 15:41:57.000000000 +0000
++++ glusterfs-1.3.10/scheduler/rr/src/Makefile.am	2008-08-07 15:42:24.000000000 +0000
+@@ -18,6 +18,8 @@ sched_PROGRAMS = rr.so
+ scheddir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/scheduler
+ 
+ rr_so_SOURCES = rr.c
++rr_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
++
+ noinst_HEADERS = rr.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS) \
+--- glusterfs-1.3.10/scheduler/alu/src/Makefile.am.link-fix	2008-08-07 15:36:16.000000000 +0000
++++ glusterfs-1.3.10/scheduler/alu/src/Makefile.am	2008-08-07 15:36:38.000000000 +0000
+@@ -18,6 +18,8 @@ sched_PROGRAMS = alu.so
+ scheddir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/scheduler
+ 
+ alu_so_SOURCES = alu.c
++alu_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
++
+ noinst_HEADERS = alu.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+--- glusterfs-1.3.10/scheduler/random/src/Makefile.am.link-fix	2008-08-07 15:37:27.000000000 +0000
++++ glusterfs-1.3.10/scheduler/random/src/Makefile.am	2008-08-07 15:37:37.000000000 +0000
+@@ -18,6 +18,8 @@ sched_PROGRAMS = random.so
+ scheddir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/scheduler
+ 
+ random_so_SOURCES = random.c
++random_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
++
+ noinst_HEADERS = random.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+--- glusterfs-1.3.10/scheduler/switch/src/Makefile.am.link-fix	2008-08-07 15:43:19.000000000 +0000
++++ glusterfs-1.3.10/scheduler/switch/src/Makefile.am	2008-08-07 15:43:28.000000000 +0000
+@@ -18,6 +18,7 @@ sched_PROGRAMS = switch.so
+ scheddir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/scheduler
+ 
+ switch_so_SOURCES = switch.c
++switch_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS) \
+ 	-I$(top_srcdir)/libglusterfs/src -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/xlators/cluster/unify/src/Makefile.am.link_fix	2008-08-07 16:06:38.000000000 +0000
++++ glusterfs-1.3.10/xlators/cluster/unify/src/Makefile.am	2008-08-07 16:07:07.000000000 +0000
+@@ -19,6 +19,8 @@ xlator_PROGRAMS = unify.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/cluster
+ 
+ unify_so_SOURCES = unify.c unify-self-heal.c
++unify_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
++
+ noinst_HEADERS = unify.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS) \
+--- glusterfs-1.3.10/xlators/cluster/afr/src/Makefile.am.link_fix	2008-08-07 16:08:13.000000000 +0000
++++ glusterfs-1.3.10/xlators/cluster/afr/src/Makefile.am	2008-08-07 16:08:22.000000000 +0000
+@@ -18,6 +18,8 @@ xlator_PROGRAMS = afr.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/cluster
+ 
+ afr_so_SOURCES = afr.c afr_self_heal.c
++afr_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
++
+ noinst_HEADERS = afr.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS) \
+--- glusterfs-1.3.10/xlators/protocol/client/src/Makefile.am.link_fix	2008-08-07 16:09:29.000000000 +0000
++++ glusterfs-1.3.10/xlators/protocol/client/src/Makefile.am	2008-08-07 16:09:43.000000000 +0000
+@@ -19,6 +19,8 @@ xlator_PROGRAMS = client.so
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/protocol
+ 
+ client_so_SOURCES = client-protocol.c
++client_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
++
+ noinst_HEADERS = client-protocol.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS) \
+--- glusterfs-1.3.10/transport/unix/client/src/Makefile.am.link_fix	2008-08-07 16:16:08.000000000 +0000
++++ glusterfs-1.3.10/transport/unix/client/src/Makefile.am	2008-08-07 16:16:36.000000000 +0000
+@@ -18,6 +18,7 @@ transport_PROGRAMS = client.so
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/unix/
+ 
+ client_so_SOURCES = unix-client.c $(top_srcdir)/transport/unix/unix.c
++client_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/unix/ -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/transport/unix/server/src/Makefile.am.link_fix	2008-08-07 16:18:37.000000000 +0000
++++ glusterfs-1.3.10/transport/unix/server/src/Makefile.am	2008-08-07 16:18:48.000000000 +0000
+@@ -18,6 +18,7 @@ transport_PROGRAMS = server.so
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/unix/
+ 
+ server_so_SOURCES = unix-server.c $(top_srcdir)/transport/unix/unix.c
++server_so_LDADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/unix/ -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
