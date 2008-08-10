@@ -7,15 +7,15 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	1.3.10
-Release:	3
+Version:	1.4.0
+%define         qa_version 33
+Release:	0.1
 License:	GPL v3+
 Group:		Applications/System
-Source0:	http://ftp.zresearch.com/pub/gluster/glusterfs/1.3/%{name}-%{version}.tar.gz
-# Source0-md5:	4231aa2d04761133d14df7b6a27a93f7
+Source0:	http://ftp.zresearch.com/pub/gluster/glusterfs/1.4-qa/%{name}-%{version}qa%{qa_version}.tar.gz
+# Source0-md5:	81793e0c75d196cf80a21e4f3096c1ca
 Source1:	glusterfsd.init
-Patch0:         %{name}-link_fix.patch
-Patch1:         %{name}-open_fix.patch
+# Patch0:         %{name}-link_fix.patch
 URL:		http://gluster.org/glusterfs.php
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -139,9 +139,8 @@ This package provides the FUSE based GlusterFS client.
 Ten pakiet udostępnia opartego na FUSE klienta GlusterFS-a.
 
 %prep
-%setup -q
-%patch0 -p1
-%patch1 -p1
+%setup -q -n %{name}-%{version}qa%{qa_version}
+# %%patch0 -p1
 
 cp -l doc/examples/README README.examples
 
