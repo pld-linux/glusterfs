@@ -168,6 +168,9 @@ rm -r $RPM_BUILD_ROOT%{_docdir}/glusterfs/examples
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post	common	-p /sbin/ldconfig
+%postun	common	-p /sbin/ldconfig
+
 %files common
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog COPYING INSTALL NEWS README README.examples doc/*.vol.sample doc/examples/*.vol
