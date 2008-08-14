@@ -324,3 +324,275 @@
  noinst_HEADERS = io-threads.h
  
  AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+--- glusterfs-1.3.10/auth/ip/src/Makefile.am-link_fix	2008-08-14 11:50:00.000000000 +0000
++++ glusterfs-1.3.10/auth/ip/src/Makefile.am	2008-08-14 11:50:54.000000000 +0000
+@@ -14,10 +14,12 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-auth_PROGRAMS = ip.so
++auth_LTLIBRARIES = ip.la
+ authdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/auth
+ 
+-ip_so_SOURCES = ip.c
++ip_la_SOURCES = ip.c
++ip_la_LDFLAGS = -module -avoid-version
++
+ #noinst_HEADERS = alu.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+--- glusterfs-1.3.10/scheduler/switch/src/Makefile.am-link_fix	2008-08-14 11:38:54.000000000 +0000
++++ glusterfs-1.3.10/scheduler/switch/src/Makefile.am	2008-08-14 11:39:26.000000000 +0000
+@@ -14,10 +14,11 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-sched_PROGRAMS = switch.so
++sched_LTLIBRARIES = switch.la
+ scheddir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/scheduler
+ 
+-switch_so_SOURCES = switch.c
++switch_la_SOURCES = switch.c
++switch_la_LDFLAGS = -module -avoid-version
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS) \
+ 	-I$(top_srcdir)/libglusterfs/src -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/scheduler/nufa/src/Makefile.am-link_fix	2008-08-14 11:36:34.000000000 +0000
++++ glusterfs-1.3.10/scheduler/nufa/src/Makefile.am	2008-08-14 11:36:51.000000000 +0000
+@@ -14,10 +14,12 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-sched_PROGRAMS = nufa.so
++sched_LTLIBRARIES = nufa.la
+ scheddir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/scheduler
+ 
+-nufa_so_SOURCES = nufa.c
++nufa_la_SOURCES = nufa.c
++nufa_la_LDFLAGS = -module -avoid-version
++
+ noinst_HEADERS = nufa.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+--- glusterfs-1.3.10/scheduler/alu/src/Makefile.am-link_fix	2008-08-14 11:32:40.000000000 +0000
++++ glusterfs-1.3.10/scheduler/alu/src/Makefile.am	2008-08-14 11:34:35.000000000 +0000
+@@ -14,11 +14,12 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-sched_PROGRAMS = alu.so
++sched_LTLIBRARIES = alu.la
+ scheddir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/scheduler
+ 
+-alu_so_SOURCES = alu.c
++alu_la_SOURCES = alu.c
+ noinst_HEADERS = alu.h
++alu_la_LDFLAGS = -module -avoid-version
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/scheduler/rr/src/Makefile.am-link_fix	2008-08-14 11:37:30.000000000 +0000
++++ glusterfs-1.3.10/scheduler/rr/src/Makefile.am	2008-08-14 11:38:28.000000000 +0000
+@@ -14,10 +14,12 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-sched_PROGRAMS = rr.so
++sched_LTLIBRARIES = rr.la
+ scheddir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/scheduler
+ 
+-rr_so_SOURCES = rr.c
++rr_la_SOURCES = rr.c
++rr_la_LDFLAGS = -module -avoid-version
++
+ noinst_HEADERS = rr.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS) \
+--- glusterfs-1.3.10/scheduler/random/src/Makefile.am-link_fix	2008-08-14 11:35:51.000000000 +0000
++++ glusterfs-1.3.10/scheduler/random/src/Makefile.am	2008-08-14 11:36:11.000000000 +0000
+@@ -14,10 +14,12 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-sched_PROGRAMS = random.so
++sched_LTLIBRARIES = random.la
+ scheddir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/scheduler
+ 
+-random_so_SOURCES = random.c
++random_la_SOURCES = random.c
++random_la_LDFLAGS = -module -avoid-version
++
+ noinst_HEADERS = random.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+--- glusterfs-1.3.10/xlators/mount/fuse/src/Makefile.am-link_fix	2008-08-14 11:25:04.000000000 +0000
++++ glusterfs-1.3.10/xlators/mount/fuse/src/Makefile.am	2008-08-14 11:31:24.000000000 +0000
+@@ -21,14 +21,15 @@ xlator_LTLIBRARIES = fuse.la
+ xlatordir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/xlator/mount
+ fuse_la_SOURCES = fuse-bridge.c fuse-extra.c
+ 
+-#fuse_la_CFLAGS = -DFUSE_USE_VERSION=26 -fPIC -Wall -pthread \
+-#	$(GF_DARWIN_BUNDLE_CFLAGS) -I$(top_srcdir)/libglusterfs/src \
+-#	-D$(GF_HOST_OS) -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE  \
+-#	-DDATADIR=\"$(localstatedir)\" -DCONFDIR=\"$(sysconfdir)/glusterfs\"
++fuse_la_CFLAGS = -DFUSE_USE_VERSION=26 -fPIC -Wall -pthread \
++	$(GF_DARWIN_BUNDLE_CFLAGS) -I$(top_srcdir)/libglusterfs/src \
++	-D$(GF_HOST_OS) -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE  \
++	-DDATADIR=\"$(localstatedir)\" -DCONFDIR=\"$(sysconfdir)/glusterfs\"
+ 
+ fuse_la_LDFLAGS =  -module -avoid-version
+ 
+ # fuse_la_LIBADD = -lfuse $(GF_DARWIN_FUSE_LDADD)
++fuse_la_LIBADD = -lfuse $(GF_DARWIN_FUSE_LDADD)
+ 
+ 
+ CLEANFILES = *~
+--- glusterfs-1.3.10/transport/tcp/client/src/Makefile.am-link_fix	2008-08-14 11:40:39.000000000 +0000
++++ glusterfs-1.3.10/transport/tcp/client/src/Makefile.am	2008-08-14 11:41:31.000000000 +0000
+@@ -14,10 +14,11 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-transport_PROGRAMS = client.so
++transport_LTLIBRARIES = client.la
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/tcp/
+ 
+-client_so_SOURCES = tcp-client.c $(top_srcdir)/transport/tcp/tcp.c
++client_la_SOURCES = tcp-client.c $(top_srcdir)/transport/tcp/tcp.c
++client_la_LDFLAGS = -module -avoid-version
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/tcp/ -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/transport/tcp/server/src/Makefile.am-link_fix	2008-08-14 11:42:13.000000000 +0000
++++ glusterfs-1.3.10/transport/tcp/server/src/Makefile.am	2008-08-14 11:42:36.000000000 +0000
+@@ -14,10 +14,11 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-transport_PROGRAMS = server.so
++transport_LTLIBRARIES = server.la
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/tcp/
+ 
+-server_so_SOURCES = tcp-server.c $(top_srcdir)/transport/tcp/tcp.c
++server_la_SOURCES = tcp-server.c $(top_srcdir)/transport/tcp/tcp.c
++server_la_LDFLAGS = -module -avoid-version
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/tcp/ -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/transport/ib-sdp/client/src/Makefile.am-link_fix	2008-08-14 11:43:08.000000000 +0000
++++ glusterfs-1.3.10/transport/ib-sdp/client/src/Makefile.am	2008-08-14 11:43:29.000000000 +0000
+@@ -14,10 +14,11 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-transport_PROGRAMS = client.so
++transport_LTLIBRARIES = client.la
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/ib-sdp
+ 
+-client_so_SOURCES = ib-sdp-client.c $(top_srcdir)/transport/ib-sdp/ib-sdp.c
++client_la_SOURCES = ib-sdp-client.c $(top_srcdir)/transport/ib-sdp/ib-sdp.c
++client_la_LDFLAGS = -module -avoid-version
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/ib-sdp -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/transport/ib-sdp/server/src/Makefile.am-link_fix	2008-08-14 11:43:52.000000000 +0000
++++ glusterfs-1.3.10/transport/ib-sdp/server/src/Makefile.am	2008-08-14 11:44:08.000000000 +0000
+@@ -14,10 +14,11 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-transport_PROGRAMS = server.so
++transport_LTLIBRARIES = server.la
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/ib-sdp
+ 
+-server_so_SOURCES = ib-sdp-server.c $(top_srcdir)/transport/ib-sdp/ib-sdp.c
++server_la_SOURCES = ib-sdp-server.c $(top_srcdir)/transport/ib-sdp/ib-sdp.c
++server_la_LDFLAGS = -module -avoid-version
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/ib-sdp -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/transport/unix/client/src/Makefile.am-link_fix	2008-08-14 11:44:57.000000000 +0000
++++ glusterfs-1.3.10/transport/unix/client/src/Makefile.am	2008-08-14 11:45:23.000000000 +0000
+@@ -14,10 +14,11 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-transport_PROGRAMS = client.so
++transport_LTLIBRARIES = client.la
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/unix/
+ 
+-client_so_SOURCES = unix-client.c $(top_srcdir)/transport/unix/unix.c
++client_la_SOURCES = unix-client.c $(top_srcdir)/transport/unix/unix.c
++client_la_LDFLAGS = -module -avoid-version
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/unix/ -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/transport/unix/server/src/Makefile.am-link_fix	2008-08-14 11:46:11.000000000 +0000
++++ glusterfs-1.3.10/transport/unix/server/src/Makefile.am	2008-08-14 11:46:27.000000000 +0000
+@@ -14,10 +14,11 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-transport_PROGRAMS = server.so
++transport_LTLIBRARIES = server.la
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/unix/
+ 
+-server_so_SOURCES = unix-server.c $(top_srcdir)/transport/unix/unix.c
++server_la_SOURCES = unix-server.c $(top_srcdir)/transport/unix/unix.c
++server_la_LDFLAGS = -module -avoid-version
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/unix/ -shared -nostartfiles $(GF_DARWIN_BUNDLE_CFLAGS)
+--- glusterfs-1.3.10/transport/ib-verbs/client/src/Makefile.am-link_fix	2008-08-14 11:48:16.000000000 +0000
++++ glusterfs-1.3.10/transport/ib-verbs/client/src/Makefile.am	2008-08-14 11:48:40.000000000 +0000
+@@ -14,11 +14,12 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-transport_PROGRAMS = client.so
++transport_LTLIBRARIES = client.la
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/ib-verbs
+ 
+-client_so_SOURCES = ib-verbs-client.c $(top_srcdir)/transport/ib-verbs/ib-verbs.c
+-client_so_LDADD = -libverbs
++client_la_SOURCES = ib-verbs-client.c $(top_srcdir)/transport/ib-verbs/ib-verbs.c
++client_la_LIBADD = -libverbs
++client_la_LDFLAGS = -module -avoid-version
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/ib-verbs -shared -nostartfiles
+--- glusterfs-1.3.10/transport/ib-verbs/server/src/Makefile.am-link_fix	2008-08-14 11:47:01.000000000 +0000
++++ glusterfs-1.3.10/transport/ib-verbs/server/src/Makefile.am	2008-08-14 11:47:35.000000000 +0000
+@@ -14,11 +14,12 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-transport_PROGRAMS = server.so
++transport_LTLIBRARIES = server.la
+ transportdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/transport/ib-verbs
+ 
+-server_so_SOURCES = ib-verbs-server.c $(top_srcdir)/transport/ib-verbs/ib-verbs.c
+-server_so_LDADD = -libverbs
++server_la_SOURCES = ib-verbs-server.c $(top_srcdir)/transport/ib-verbs/ib-verbs.c
++server_la_LIBADD = -libverbs
++server_la_LDFLAGS = -module -avoid-version
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
+ 	-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/transport/ib-verbs -shared -nostartfiles
+--- glusterfs-1.3.10/auth/login/src/Makefile.am-link_fix	2008-08-14 12:01:52.000000000 +0000
++++ glusterfs-1.3.10/auth/login/src/Makefile.am	2008-08-14 12:02:38.000000000 +0000
+@@ -14,10 +14,12 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-auth_PROGRAMS = login.so
++auth_LTLIBRARIES = login.la
+ authdir = $(libdir)/glusterfs/$(PACKAGE_VERSION)/auth
+ 
+-login_so_SOURCES = login.c
++login_la_SOURCES = login.c
++login_la_LDFLAGS = -module -avoid-version
++
+ #noinst_HEADERS = alu.h
+ 
+ AM_CFLAGS = -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -Wall -D$(GF_HOST_OS)\
