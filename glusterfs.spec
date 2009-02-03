@@ -11,11 +11,9 @@ Name:		glusterfs
 Version:	2.0.0
 %define          _rc        rc1
 %define          _version        %{version}%{_rc}
-Release:	0.%{_rc}.1
+Release:	0.%{_rc}.2
 License:	GPL v3+
 Group:		Applications/System
-#               http://ftp.zresearch.com/pub/gluster/glusterfs/1.3/1.3.12/glusterfs-1.3.12.tar.gz
-#               http://ftp.zresearch.com/pub/gluster/glusterfs/2.0/2.0.0/glusterfs-2.0.0rc1.tar.gz
 Source0:	http://ftp.zresearch.com/pub/gluster/glusterfs/2.0/%{version}/%{name}-%{_version}.tar.gz
 # Source0-md5:	6f6943fbb958c3f386ce3f152cf7ccdd
 Source1:	glusterfsd.init
