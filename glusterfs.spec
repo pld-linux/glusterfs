@@ -11,7 +11,7 @@ Name:		glusterfs
 Version:	2.0.0
 %define          _rc        rc1
 %define          _version        %{version}%{_rc}
-Release:	0.%{_rc}.2
+Release:	0.%{_rc}.3
 License:	GPL v3+
 Group:		Applications/System
 Source0:	http://ftp.zresearch.com/pub/gluster/glusterfs/2.0/%{version}/%{name}-%{_version}.tar.gz
@@ -151,6 +151,8 @@ cp -l doc/examples/README README.examples
 %{__autoconf}
 %{__automake}
 %configure \
+	--disable-bdb \
+	--disable-mod_glusterfs \
 	%{!?with_ibverbs:--disable-ibverbs}
 %{__make}
 
