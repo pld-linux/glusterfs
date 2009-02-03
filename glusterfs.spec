@@ -186,17 +186,17 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/glusterfs/glusterfs-booster.so
 %dir %{_libdir}/glusterfs/%{_version}
 %dir %{_libdir}/glusterfs/%{_version}/auth
-%attr(755,root,root) %ghost %{_libdir}/glusterfs/%{_version}/auth/addr.so
-%attr(755,root,root) %ghost %{_libdir}/glusterfs/%{_version}/auth/login.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/auth/addr.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/auth/login.so
 
 %dir %{_libdir}/glusterfs/%{_version}/scheduler
 ## %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/{alu,nufa,random,rr,switch}.so*
 
-%attr(755,root,root) %ghost %{_libdir}/glusterfs/%{_version}/scheduler/alu.so
-%attr(755,root,root) %ghost %{_libdir}/glusterfs/%{_version}/scheduler/nufa.so
-%attr(755,root,root) %ghost %{_libdir}/glusterfs/%{_version}/scheduler/random.so
-%attr(755,root,root) %ghost %{_libdir}/glusterfs/%{_version}/scheduler/rr.so
-%attr(755,root,root) %ghost %{_libdir}/glusterfs/%{_version}/scheduler/switch.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/alu.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/nufa.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/random.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/rr.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/switch.so
 
 %dir %{_libdir}/glusterfs/%{_version}/transport
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/transport/ib-verbs.so
