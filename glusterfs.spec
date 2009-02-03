@@ -1,8 +1,8 @@
 # TODO: Decide what to do with -static
 #       Obsolete it, fix build ?
-# TODO: Fix building xlators/performance/booster/glusterfs-booster.so
-#       Now it builds as executable so can't be dlopened later ...
-# Conditional build:
+# TODO: Conditional builds + packages for:
+# Berkeley-DB        : yes
+# mod_glusterfs      : yes (2.2)
 %bcond_without	ibverbs		# ib-verbs transport
 #
 Summary:	Clustered File Storage that can scale to peta bytes
@@ -19,8 +19,6 @@ Group:		Applications/System
 Source0:	http://ftp.zresearch.com/pub/gluster/glusterfs/2.0/%{version}/%{name}-%{_version}.tar.gz
 # Source0-md5:	6f6943fbb958c3f386ce3f152cf7ccdd
 Source1:	glusterfsd.init
-# Patch0:         %{name}-link_fix.patch
-# Patch1:         %{name}-open_fix.patch
 URL:		http://gluster.org/glusterfs.php
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -145,8 +143,7 @@ Ten pakiet udostępnia opartego na FUSE klienta GlusterFS-a.
 
 %prep
 %setup -q -n %{name}-%{_version}
-#%%patch0 -p1
-#%%patch1 -p1
+%{__sed} -i -e 's|-avoidversion|-avoid-version|g'  */*/*/Makefile.am  */*/*/*/Makefile.am
 
 cp -l doc/examples/README README.examples
 
@@ -190,46 +187,39 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/glusterfs/%{_version}
 %dir %{_libdir}/glusterfs/%{_version}/auth
 %attr(755,root,root) %ghost %{_libdir}/glusterfs/%{_version}/auth/addr.so
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/auth/addr.so.*.*.*
-# %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/auth/login.so*
 %attr(755,root,root) %ghost %{_libdir}/glusterfs/%{_version}/auth/login.so
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/auth/login.so.*.*.*
 
 %dir %{_libdir}/glusterfs/%{_version}/scheduler
 ## %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/{alu,nufa,random,rr,switch}.so*
 
 %attr(755,root,root) %ghost %{_libdir}/glusterfs/%{_version}/scheduler/alu.so
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/alu.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/glusterfs/%{_version}/scheduler/nufa.so
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/nufa.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/glusterfs/%{_version}/scheduler/random.so
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/random.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/glusterfs/%{_version}/scheduler/rr.so
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/rr.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/glusterfs/%{_version}/scheduler/switch.so
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/switch.so.*.*.*
 
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/transport/ib-verbs.so*
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/transport/socket.so*
+%dir %{_libdir}/glusterfs/%{_version}/transport
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/transport/ib-verbs.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/transport/socket.so
 
 %dir %{_libdir}/glusterfs/%{_version}/xlator
 %dir %{_libdir}/glusterfs/%{_version}/xlator/cluster
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/cluster/*.so*
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/cluster/*.so
 
 %dir %{_libdir}/glusterfs/%{_version}/xlator/debug
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/debug/*.so*
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/debug/*.so
 %dir %{_libdir}/glusterfs/%{_version}/xlator/encryption
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/encryption/*.so*
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/encryption/*.so
 %dir %{_libdir}/glusterfs/%{_version}/xlator/features
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/features/*.so*
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/features/*.so
 %dir %{_libdir}/glusterfs/%{_version}/xlator/mount
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/mount/fuse.so*
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/mount/fuse.so
 %dir %{_libdir}/glusterfs/%{_version}/xlator/performance
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/performance/*.so*
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/performance/*.so
 %dir %{_libdir}/glusterfs/%{_version}/xlator/protocol
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/protocol/*.so*
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/protocol/*.so
 %dir %{_libdir}/glusterfs/%{_version}/xlator/storage
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/storage/*.so*
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/storage/*.so
 
 %{_mandir}/man8/*.8*
 
