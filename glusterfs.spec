@@ -9,13 +9,13 @@ Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
 Version:	2.0.0
-%define          _rc        rc1
+%define          _rc        rc2
 %define          _version        %{version}%{_rc}
-Release:	0.%{_rc}.4
+Release:	0.%{_rc}.1
 License:	GPL v3+
 Group:		Applications/System
 Source0:	http://ftp.zresearch.com/pub/gluster/glusterfs/2.0/%{version}/%{name}-%{_version}.tar.gz
-# Source0-md5:	6f6943fbb958c3f386ce3f152cf7ccdd
+# Source0-md5:	7c0a45f29b7d20b30da4b46bf970cecc
 Source1:	glusterfsd.init
 URL:		http://gluster.org/glusterfs.php
 BuildRequires:	autoconf >= 2.50
@@ -183,14 +183,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libglusterfsclient.so.0
 
 %dir %{_libdir}/glusterfs
-%attr(755,root,root) %{_libdir}/glusterfs/glusterfs-booster.so
+# %attr(755,root,root) %{_libdir}/glusterfs/glusterfs-booster.so
 %dir %{_libdir}/glusterfs/%{_version}
 %dir %{_libdir}/glusterfs/%{_version}/auth
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/auth/addr.so
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/auth/login.so
 
 %dir %{_libdir}/glusterfs/%{_version}/scheduler
-## %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/{alu,nufa,random,rr,switch}.so*
 
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/alu.so
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/nufa.so
@@ -229,7 +228,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libglusterfs.so
 %{_libdir}/libglusterfs.la
-#%{_includedir}/*.h
+%attr(755,root,root) %{_libdir}/libglusterfsclient.so
+%{_libdir}/libglusterfsclient.la
+%{_includedir}/*.h
 
 # %files static
 # %defattr(644,root,root,755)
