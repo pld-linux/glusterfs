@@ -8,16 +8,16 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	2.0.0
-%define          _rc        rc2
-%define          _version        %{version}%{_rc}
-Release:	0.%{_rc}.1
+Version:	2.0.1
+#%%define          _rc        {rc2}
+%define          _version        %{version}
+Release:	0.1
 License:	GPL v3+
 Group:		Applications/System
-Source0:	http://ftp.zresearch.com/pub/gluster/glusterfs/2.0/%{version}/%{name}-%{_version}.tar.gz
-# Source0-md5:	7c0a45f29b7d20b30da4b46bf970cecc
+Source0:	http://ftp.gluster.com/pub/gluster/glusterfs/2.0/LATEST/glusterfs-%{version}.tar.gz
+# Source0-md5:	712b6325abbd9f89ac927727a4bad658
 Source1:	glusterfsd.init
-URL:		http://gluster.org/glusterfs.php
+URL:		http://www.gluster.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	bison
@@ -116,6 +116,7 @@ Wtyczki transportu "verbs" InfiniBand dla GlusterFS-a.
 Summary:	GlusterFS Server
 Summary(pl.UTF-8):	Serwer GlusterFS-a
 Group:		Daemons
+Requires:	%{name}-client = %{version}-%{release}
 Requires:	%{name}-common = %{version}-%{release}
 Requires(post,preun):	/sbin/chkconfig
 Requires:	rc-scripts
@@ -246,9 +247,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*
 %attr(754,root,root) /etc/rc.d/init.d/glusterfsd
-%attr(755,root,root) %{_sbindir}/glusterfsd
 
 %files client
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/glusterfs
+%attr(755,root,root) %{_sbindir}/glusterfsd
 %attr(755,root,root) /sbin/mount.glusterfs
