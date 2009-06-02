@@ -1,5 +1,8 @@
 # TODO: Decide what to do with -static
 #       Obsolete it, fix build ?
+# TODO: merge server and client packages somewhat, since the daemon 
+#       is the same, leaving only stub packages for each (init scripts,
+#       configs)
 # TODO: Conditional builds + packages for:
 # Berkeley-DB        : yes
 # mod_glusterfs      : yes (2.2)
