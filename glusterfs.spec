@@ -20,6 +20,7 @@ Group:		Applications/System
 Source0:	http://ftp.gluster.com/pub/gluster/glusterfs/2.0/LATEST/glusterfs-%{version}.tar.gz
 # Source0-md5:	712b6325abbd9f89ac927727a4bad658
 Source1:	glusterfsd.init
+Patch0: %{name}-transportdir.patch
 URL:		http://www.gluster.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -145,6 +146,7 @@ Ten pakiet udostępnia opartego na FUSE klienta GlusterFS-a.
 
 %prep
 %setup -q -n %{name}-%{_version}
+%patch0 -p1
 %{__sed} -i -e 's|-avoidversion|-avoid-version|g'  */*/*/Makefile.am  */*/*/*/Makefile.am
 
 cp -l doc/examples/README README.examples
