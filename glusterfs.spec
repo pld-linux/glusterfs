@@ -204,7 +204,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/switch.so
 
 %dir %{_libdir}/glusterfs/%{_version}/transport
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/transport/ib-verbs.so
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/transport/socket.so
 
 %dir %{_libdir}/glusterfs/%{_version}/xlator
