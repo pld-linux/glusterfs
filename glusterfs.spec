@@ -11,16 +11,15 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	2.0.1
+Version:	2.0.9
 #%%define          _rc        {rc2}
 %define          _version        %{version}
-Release:	0.1
+Release:	1
 License:	GPL v3+
 Group:		Applications/System
 Source0:	http://ftp.gluster.com/pub/gluster/glusterfs/2.0/LATEST/glusterfs-%{version}.tar.gz
-# Source0-md5:	712b6325abbd9f89ac927727a4bad658
+# Source0-md5:	0467740f423e32bdf2f66d2cf63467f3
 Source1:	glusterfsd.init
-Patch0: %{name}-transportdir.patch
 URL:		http://www.gluster.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -146,7 +145,6 @@ Ten pakiet udostępnia opartego na FUSE klienta GlusterFS-a.
 
 %prep
 %setup -q -n %{name}-%{_version}
-%patch0 -p1
 %{__sed} -i -e 's|-avoidversion|-avoid-version|g'  */*/*/Makefile.am  */*/*/*/Makefile.am
 
 cp -l doc/examples/README README.examples
@@ -189,7 +187,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libglusterfsclient.so.0
 
 %dir %{_libdir}/glusterfs
-# %attr(755,root,root) %{_libdir}/glusterfs/glusterfs-booster.so
+%attr(755,root,root) %{_libdir}/glusterfs/libglusterfs-booster.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/glusterfs/libglusterfs-booster.so.0
+
 %dir %{_libdir}/glusterfs/%{_version}
 %dir %{_libdir}/glusterfs/%{_version}/auth
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/auth/addr.so
@@ -254,6 +254,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files client
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/glusterfs-volgen
 %attr(755,root,root) %{_sbindir}/glusterfs
 %attr(755,root,root) %{_sbindir}/glusterfsd
 %attr(755,root,root) /sbin/mount.glusterfs
