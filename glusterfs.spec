@@ -6,19 +6,21 @@
 # TODO: Conditional builds + packages for:
 # Berkeley-DB        : yes
 # mod_glusterfs      : yes (2.2)
+
+
 %bcond_without	ibverbs		# ib-verbs transport
 #
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	2.0.9
+Version:	3.0.5
 #%%define          _rc        {rc2}
 %define          _version        %{version}
 Release:	1
 License:	GPL v3+
 Group:		Applications/System
-Source0:	http://ftp.gluster.com/pub/gluster/glusterfs/2.0/LATEST/glusterfs-%{version}.tar.gz
-# Source0-md5:	0467740f423e32bdf2f66d2cf63467f3
+Source0:	http://ftp.gluster.com/pub/gluster/glusterfs/3.0/LATEST/glusterfs-%{version}.tar.gz
+# Source0-md5:	da6f9f4e21859f1115ec3853cb701868
 Source1:	glusterfsd.init
 URL:		http://www.gluster.org/
 BuildRequires:	autoconf >= 2.50
@@ -158,7 +160,8 @@ cp -l doc/examples/README README.examples
 	--disable-bdb \
 	--disable-mod_glusterfs \
 	%{!?with_ibverbs:--disable-ibverbs}
-%{__make}
+# -j8 breaks for 3.0.5
+%{__make} -j1
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -209,7 +212,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/glusterfs/%{_version}/xlator
 %dir %{_libdir}/glusterfs/%{_version}/xlator/cluster
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/cluster/*.so
-
 %dir %{_libdir}/glusterfs/%{_version}/xlator/debug
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/debug/*.so
 %dir %{_libdir}/glusterfs/%{_version}/xlator/encryption
@@ -218,12 +220,23 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/features/*.so
 %dir %{_libdir}/glusterfs/%{_version}/xlator/mount
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/mount/fuse.so
+%dir %{_libdir}/glusterfs/%{_version}/xlator/legacy
+%dir %{_libdir}/glusterfs/%{_version}/xlator/legacy/cluster
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/legacy/cluster/*.so
 %dir %{_libdir}/glusterfs/%{_version}/xlator/performance
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/performance/*.so
 %dir %{_libdir}/glusterfs/%{_version}/xlator/protocol
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/protocol/*.so
 %dir %{_libdir}/glusterfs/%{_version}/xlator/storage
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/storage/*.so
+%dir %{_libdir}/glusterfs/%{_version}/xlator/testing
+%dir %{_libdir}/glusterfs/%{_version}/xlator/testing/cluster
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/testing/cluster/*.so
+%dir %{_libdir}/glusterfs/%{_version}/xlator/testing/features
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/testing/features/*.so
+%dir %{_libdir}/glusterfs/%{_version}/xlator/testing/performance
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/testing/performance/*.so
+
 
 %{_mandir}/man8/*.8*
 
