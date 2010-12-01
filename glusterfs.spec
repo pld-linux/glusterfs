@@ -1,9 +1,10 @@
+# TODO: Find pidfiles killproc --pidfile ${PIDFILE} -TERM
+#       instead of kill -TERM ${PID}  
 # TODO: Decide what to do with -static
 #       Obsolete it, fix build ?
-# TODO: Consider switching option working-directory from /etc/glusterd
-#       to /var/lib/glusterd as in Gentoo, as it more managed from CLI 
-
-
+# TODO: Check transport-ibverbs package and ibverbs bcond
+# TODO: Add passing options from /etc/sysconfig/glusterfsd
+#       to glusterfsd
 
 %bcond_without	ibverbs		# ib-verbs transport
 #
@@ -13,13 +14,15 @@ Name:		glusterfs
 Version:	3.1.1
 #%%define          _rc        {rc2}
 %define          _version        %{version}
-Release:	0.1
+Release:	1
 License:	GPL v3+
 Group:		Applications/System
 # http://download.gluster.com/pub/gluster/glusterfs/3.1/LATEST/glusterfs-3.1.1.tar.gz
 Source0:	http://ftp.gluster.com/pub/gluster/glusterfs/3.1/LATEST/glusterfs-%{version}.tar.gz
 # Source0-md5:	4584710adee36920c97a658b25a1446d
 Source1:	glusterfsd.init
+Patch0:     %{name}-parallel-build.patch
+Patch1:     %{name}-workdir.patch
 URL:		http://www.gluster.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -27,6 +30,7 @@ BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libfuse-devel >= 2.6
 BuildRequires:	libtool
+BuildRequires:  readline-devel
 %{?with_ibverbs:BuildRequires:	libibverbs-devel >= 1.0.4}
 BuildRequires:	rpmbuild(macros) >= 1.228
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -145,9 +149,11 @@ Ten pakiet udostępnia opartego na FUSE klienta GlusterFS-a.
 
 %prep
 %setup -q -n %{name}-%{_version}
+%patch0 -p0
+%patch1 -p1
 %{__sed} -i -e 's|-avoidversion|-avoid-version|g'  */*/*/Makefile.am  */*/*/*/Makefile.am
-
 cp -l doc/examples/README README.examples
+
 
 %build
 %{__libtoolize}
@@ -155,18 +161,22 @@ cp -l doc/examples/README README.examples
 %{__autoconf}
 %{__automake}
 %configure \
-	--disable-bdb \
-	--disable-mod_glusterfs \
+     --enable-fusermount \
 	%{!?with_ibverbs:--disable-ibverbs}
+
 # -j8 breaks for 3.0.5
-%{__make} -j1
+# %{__make} -j1
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
+install -d $RPM_BUILD_ROOT%{_var}/lib/glusterd/
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
+	
+# No idea why installs elsewhere than later expects to be
+mv $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/glusterd.vol $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/glusterfsd.vol
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/glusterfsd
 
@@ -198,23 +208,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/auth/addr.so*
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/auth/login.so*
 
-
-# %dir %{_libdir}/glusterfs/%{_version}/scheduler
-
-# %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/alu.so
-# %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/nufa.so
-# %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/random.so
-# %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/rr.so
-# %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/scheduler/switch.so
-
-# %dir %{_libdir}/glusterfs/%{_version}/transport
-# %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/transport/socket.so
-
-
 %dir %{_libdir}/glusterfs/%{_version}/rpc-transport
-%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/rpc-transport/rdma.so
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/rpc-transport/socket.so
-
 
 %dir %{_libdir}/glusterfs/%{_version}/xlator
 %dir %{_libdir}/glusterfs/%{_version}/xlator/cluster
@@ -227,9 +222,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/features/*.so
 %dir %{_libdir}/glusterfs/%{_version}/xlator/mount
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/mount/fuse.so
-# %dir %{_libdir}/glusterfs/%{_version}/xlator/legacy
-# %dir %{_libdir}/glusterfs/%{_version}/xlator/legacy/cluster
-# %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/legacy/cluster/*.so
 
 %dir %{_libdir}/glusterfs/%{_version}/xlator/mgmt
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/mgmt/glusterd.so
@@ -247,28 +239,20 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/glusterfs/%{_version}/xlator/storage
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/storage/*.so
 %dir %{_libdir}/glusterfs/%{_version}/xlator/testing
-# %dir %{_libdir}/glusterfs/%{_version}/xlator/testing/cluster
-# %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/testing/cluster/*.so
 %dir %{_libdir}/glusterfs/%{_version}/xlator/testing/features
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/testing/features/*.so
 %dir %{_libdir}/glusterfs/%{_version}/xlator/testing/performance
 %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/xlator/testing/performance/*.so
 
-
 %{_mandir}/man8/*.8*
-
-%dir /var/log/glusterfs
+%dir %{_var}/log/glusterfs
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libglusterfs.so
 %{_libdir}/libglusterfs.la
-# %attr(755,root,root) %{_libdir}/libglusterfsclient.so
-# %{_libdir}/libglusterfsclient.la
-# %{_includedir}/*.h
 %attr(755,root,root) %{_libdir}/libgfrpc.so
 %{_libdir}/libgfrpc.la
-
 %attr(755,root,root) %{_libdir}/libgfxdr.so
 %{_libdir}/libgfxdr.la
 
@@ -281,20 +265,21 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with ibverbs}
 %files transport-ibverbs
 %defattr(644,root,root,755)
-# %attr(755,root,root) %{_libdir}/glusterfs/%{_version}/transport/ib-verbs.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{_version}/rpc-transport/rdma.so
 %endif
 
 %files server
 %defattr(644,root,root,755)
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/glusterfsd.vol
 %attr(754,root,root) /etc/rc.d/init.d/glusterfsd
 %attr(755,root,root) %{_sbindir}/glusterd
 %attr(755,root,root) %{_sbindir}/glusterfs
 %attr(755,root,root) %{_sbindir}/glusterfsd
-
+%dir %{_var}/lib/glusterd/
 
 %files client
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/fusermount-glusterfs
 %attr(755,root,root) %{_bindir}/glusterfs-volgen
 %attr(755,root,root) %{_bindir}/glusterfs-defrag
 %attr(755,root,root) /sbin/mount.glusterfs
