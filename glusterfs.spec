@@ -6,13 +6,6 @@
 # TODO: Add passing options from /etc/sysconfig/glusterfsd
 #       to glusterfsd
 
-# TODO: Client alone is unable to mount volume:
-# /sbin/mount.glusterfs: line 124: /usr/sbin/glusterfs: No such file or directory
-# [matkor@appserver3 /usr/lib/python2.7/site-packages]$ ls -la /usr/sbin/glusterfs
-# lrwxrwxrwx 1 root root 10 Dec  1 15:01 /usr/sbin/glusterfs -> glusterfsd
-# Move binaries to common ?
-
-
 %bcond_without	ibverbs		# ib-verbs transport
 #
 Summary:	Clustered File Storage that can scale to peta bytes
@@ -21,7 +14,7 @@ Name:		glusterfs
 Version:	3.1.1
 #%%define          _rc        {rc2}
 %define          _version        %{version}
-Release:	1
+Release:	2
 License:	GPL v3+
 Group:		Applications/System
 # http://download.gluster.com/pub/gluster/glusterfs/3.1/LATEST/glusterfs-3.1.1.tar.gz
@@ -205,6 +198,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgfxdr.so.0
 %attr(755,root,root) %{_libdir}/libglusterfs.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libglusterfs.so.0
+# NOTE: glusterfs is link to glusterfsd and is needed by client mount 
+%attr(755,root,root) %{_sbindir}/glusterfs
+%attr(755,root,root) %{_sbindir}/glusterfsd
 
 %dir %{_libdir}/glusterfs
 # %attr(755,root,root) %{_libdir}/glusterfs/libglusterfs-booster.so.*.*.*
@@ -280,8 +276,6 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/glusterfsd.vol
 %attr(754,root,root) /etc/rc.d/init.d/glusterfsd
 %attr(755,root,root) %{_sbindir}/glusterd
-%attr(755,root,root) %{_sbindir}/glusterfs
-%attr(755,root,root) %{_sbindir}/glusterfsd
 %dir %{_var}/lib/glusterd/
 
 %files client
