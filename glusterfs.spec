@@ -6,6 +6,13 @@
 # TODO: Add passing options from /etc/sysconfig/glusterfsd
 #       to glusterfsd
 
+# TODO: Client alone is unable to mount volume:
+# /sbin/mount.glusterfs: line 124: /usr/sbin/glusterfs: No such file or directory
+# [matkor@appserver3 /usr/lib/python2.7/site-packages]$ ls -la /usr/sbin/glusterfs
+# lrwxrwxrwx 1 root root 10 Dec  1 15:01 /usr/sbin/glusterfs -> glusterfsd
+# Move binaries to common ?
+
+
 %bcond_without	ibverbs		# ib-verbs transport
 #
 Summary:	Clustered File Storage that can scale to peta bytes
