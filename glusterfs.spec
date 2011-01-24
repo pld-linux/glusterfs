@@ -1,5 +1,5 @@
 # TODO: Find pidfiles killproc --pidfile ${PIDFILE} -TERM
-#       instead of kill -TERM ${PID}  
+#       instead of kill -TERM ${PID}
 # TODO: Decide what to do with -static
 #       Obsolete it, fix build ?
 # TODO: Check transport-ibverbs package and ibverbs bcond
@@ -12,8 +12,8 @@ Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
 Version:	3.1.2
-#%%define          _rc        {rc2}
-%define          _version        %{version}
+#%%define	_rc	{rc2}
+%define		_version	%{version}
 Release:	1
 License:	AGPLv3
 Group:		Applications/System
@@ -21,17 +21,18 @@ Group:		Applications/System
 Source0:	http://ftp.gluster.com/pub/gluster/glusterfs/3.1/LATEST/glusterfs-%{version}.tar.gz
 # Source0-md5:	9dee75180db951cde971722f80779769
 Source1:	glusterfsd.init
-Patch0:     %{name}-parallel-build.patch
-Patch1:     %{name}-workdir.patch
+Patch0:		%{name}-parallel-build.patch
+Patch1:		%{name}-workdir.patch
 URL:		http://www.gluster.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	libfuse-devel >= 2.6
-BuildRequires:	libtool
-BuildRequires:  readline-devel
 %{?with_ibverbs:BuildRequires:	libibverbs-devel >= 1.0.4}
+BuildRequires:	libtool
+BuildRequires:	readline-devel
+BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.228
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -46,12 +47,12 @@ userspace and easily manageable.
 
 %description -l pl.UTF-8
 GlusterFS to klastrowy system plików skalujący się do petabajtów.
-Scala różne kawałki miejsca po łączach Infiniband RDMA lub TCP/IP
-w jeden duży, równoległy sieciowy system plików. GlusterFS to
-jeden z najbardziej wyszukanych systemów plików jeśli chodzi o
-możliwości i rozszerzalność. Zapożycza potężną ideę o nazwie
-Translators z jądra GNU Hurd. Duża część kodu GlusterFS działa w
-przestrzeni użytkownika i jest łatwo zarządzalna.
+Scala różne kawałki miejsca po łączach Infiniband RDMA lub TCP/IP w
+jeden duży, równoległy sieciowy system plików. GlusterFS to jeden z
+najbardziej wyszukanych systemów plików jeśli chodzi o możliwości i
+rozszerzalność. Zapożycza potężną ideę o nazwie Translators z jądra
+GNU Hurd. Duża część kodu GlusterFS działa w przestrzeni użytkownika i
+jest łatwo zarządzalna.
 
 %package common
 Summary:	GlusterFS Library and Translators
@@ -72,12 +73,12 @@ common to both GlusterFS server and client framework.
 
 %description common -l pl.UTF-8
 GlusterFS to klastrowy system plików skalujący się do petabajtów.
-Scala różne kawałki miejsca po łączach Infiniband RDMA lub TCP/IP
-w jeden duży, równoległy sieciowy system plików. GlusterFS to
-jeden z najbardziej wyszukanych systemów plików jeśli chodzi o
-możliwości i rozszerzalność. Zapożycza potężną ideę o nazwie
-Translators z jądra GNU Hurd. Duża część kodu GlusterFS działa w
-przestrzeni użytkownika i jest łatwo zarządzalna.
+Scala różne kawałki miejsca po łączach Infiniband RDMA lub TCP/IP w
+jeden duży, równoległy sieciowy system plików. GlusterFS to jeden z
+najbardziej wyszukanych systemów plików jeśli chodzi o możliwości i
+rozszerzalność. Zapożycza potężną ideę o nazwie Translators z jądra
+GNU Hurd. Duża część kodu GlusterFS działa w przestrzeni użytkownika i
+jest łatwo zarządzalna.
 
 Ten pakiet zawiera libglusterfs i moduły translatorów glusterfs
 wspólne dla klienta jak i serwera GlusterFS-a.
@@ -161,7 +162,7 @@ cp -l doc/examples/README README.examples
 %{__autoconf}
 %{__automake}
 %configure \
-     --enable-fusermount \
+	--enable-fusermount \
 	%{!?with_ibverbs:--disable-ibverbs}
 
 # -j8 breaks for 3.0.5
@@ -174,7 +175,7 @@ install -d $RPM_BUILD_ROOT%{_var}/lib/glusterd/
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
-	
+
 # No idea why installs elsewhere than later expects to be
 mv $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/glusterd.vol $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/glusterfsd.vol
 
@@ -198,7 +199,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgfxdr.so.0
 %attr(755,root,root) %{_libdir}/libglusterfs.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libglusterfs.so.0
-# NOTE: glusterfs is link to glusterfsd and is needed by client mount 
+# NOTE: glusterfs is link to glusterfsd and is needed by client mount
 %attr(755,root,root) %{_sbindir}/glusterfs
 %attr(755,root,root) %{_sbindir}/glusterfsd
 
