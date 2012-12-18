@@ -15,27 +15,17 @@ Patch by Ultrabug.
  #define GLUSTERD_DEFAULT_PORT    GF_DEFAULT_BASE_PORT
  #define GLUSTERD_INFO_FILE      "glusterd.info"
  #define GLUSTERD_VOLUME_DIR_PREFIX "vols"
---- a/doc/glusterd.vol  2010-10-13 06:20:36.000000000 +0200
-+++ b/doc/glusterd.vol  2010-10-26 10:48:16.487931870 +0200
-@@ -1,6 +1,6 @@
- volume management
-     type mgmt/glusterd
--    option working-directory /etc/glusterd
-+    option working-directory /var/lib/glusterd
-     option transport-type socket,rdma
-     option transport.socket.keepalive-time 10
-     option transport.socket.keepalive-interval 2
---- a/doc/gluster.8  2010-10-13 06:20:36.000000000 +0200
-+++ b/doc/gluster.8  2010-10-26 10:48:36.738500314 +0200
-@@ -118,7 +118,7 @@
- .TP
- .PP
+--- glusterfs-3.3.1/doc/gluster.8.orig	2012-12-17 21:18:56.608637562 +0100
++++ glusterfs-3.3.1/doc/gluster.8	2012-12-17 21:37:38.258614182 +0100
+@@ -160,7 +160,7 @@
+ Exit the gluster command line interface.
+ 
  .SH FILES
 -/etc/glusterd/*
 +/var/lib/glusterd/*
-
  .SH SEE ALSO
  .nf
+ \fBfusermount\fR(1), \fBmount.glusterfs\fR(8), \fBglusterfs\fR(8), \fBglusterd\fR(8)
 --- a/doc/glusterd.8 2010-10-13 06:20:36.000000000 +0200
 +++ b/doc/glusterd.8 2010-10-26 10:48:44.898729373 +0200
 @@ -70,7 +70,7 @@

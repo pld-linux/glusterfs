@@ -1,0 +1,28 @@
+--- glusterfs-3.3.1/rpc/Makefile.am.orig	2012-12-17 22:48:54.435191720 +0100
++++ glusterfs-3.3.1/rpc/Makefile.am	2012-12-17 22:56:20.508515756 +0100
+@@ -1 +1 @@
+-SUBDIRS = rpc-lib rpc-transport xdr
++SUBDIRS = xdr rpc-lib rpc-transport
+--- glusterfs-3.3.1/rpc/rpc-lib/src/Makefile.am.orig	2012-12-17 22:16:10.205232660 +0100
++++ glusterfs-3.3.1/rpc/rpc-lib/src/Makefile.am	2012-12-17 22:48:22.138525726 +0100
+@@ -3,7 +3,7 @@
+ libgfrpc_la_SOURCES = auth-unix.c rpcsvc-auth.c rpcsvc.c auth-null.c \
+ 	rpc-transport.c xdr-rpc.c xdr-rpcclnt.c rpc-clnt.c auth-glusterfs.c
+ 
+-libgfrpc_la_LIBADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
++libgfrpc_la_LIBADD = $(top_builddir)/libglusterfs/src/libglusterfs.la $(top_builddir)/rpc/xdr/src/libgfxdr.la
+ 
+ noinst_HEADERS = rpcsvc.h rpc-transport.h xdr-common.h xdr-rpc.h xdr-rpcclnt.h \
+ 	rpc-clnt.h rpcsvc-common.h protocol-common.h
+--- glusterfs-3.3.1/rpc/xdr/src/Makefile.am.orig	2012-12-17 22:56:45.071848577 +0100
++++ glusterfs-3.3.1/rpc/xdr/src/Makefile.am	2012-12-17 23:12:22.731829033 +0100
+@@ -6,8 +6,7 @@
+ 			-D_GNU_SOURCE -D$(GF_HOST_OS) \
+ 			-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/rpc/rpc-lib/src
+ 
+-libgfxdr_la_LIBADD = $(top_builddir)/libglusterfs/src/libglusterfs.la \
+-		$(top_builddir)/rpc/rpc-lib/src/libgfrpc.la
++libgfxdr_la_LIBADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
+ 
+ libgfxdr_la_SOURCES =  xdr-generic.c rpc-common-xdr.c \
+ 			glusterfs3-xdr.c \
