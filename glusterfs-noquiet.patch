@@ -1,0 +1,21 @@
+--- glusterfs-3.4.0/configure.ac.orig	2013-07-12 19:43:26.000000000 +0200
++++ glusterfs-3.4.0/configure.ac	2013-07-23 17:07:15.203576003 +0200
+@@ -12,18 +12,6 @@
+ 
+ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES(yes)])
+ 
+-if make --help 2>&1 | grep -q no-print-directory; then
+-   AM_MAKEFLAGS="$AM_MAKEFLAGS --no-print-directory";
+-fi
+-
+-if make --help 2>&1 | grep -q quiet; then
+-   AM_MAKEFLAGS="$AM_MAKEFLAGS --quiet"
+-fi
+-
+-if libtool --help 2>&1 | grep -q quiet; then
+-   AM_LIBTOOLFLAGS="--quiet";
+-fi
+-
+ AC_CONFIG_HEADERS([config.h])
+ 
+ AC_CONFIG_FILES([Makefile
