@@ -189,13 +189,13 @@ Agenci OCF do monitorowania procesów GlusterFS-a.
 	--enable-systemtap%{!?with_systemtap:=no} \
 	--with-initdir=/etc/rc.d/init.d
 
-%{__make}
+%{__make} -j1
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_var}/lib/glusterd}
 
-%{__make} install \
+%{__make} -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 # No idea why installs elsewhere than later expects to be
