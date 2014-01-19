@@ -1,8 +1,11 @@
-# TODO: Find pidfiles killproc --pidfile ${PIDFILE} -TERM
-#       instead of kill -TERM ${PID}
-# TODO: Check transport-ibverbs package and ibverbs bcond
-# TODO: Add passing options from /etc/sysconfig/glusterfsd
-#       to glusterfsd
+# TODO:
+# - Find pidfiles killproc --pidfile ${PIDFILE} -TERM instead of kill -TERM ${PID}
+# - Check transport-ibverbs package and ibverbs bcond
+# - Add passing options from /etc/sysconfig/glusterfsd to glusterfsd
+# - package /etc/glusterfs/glusterfs-logrotate as logrotate config
+# - package in proper emacs/vim locations:
+#   /usr/share/doc/glusterfs/glusterfs-mode.el
+#   /usr/share/doc/glusterfs/glusterfs.vim
 #
 # Conditional build:
 %bcond_without	ibverbs		# ib-verbs transport
@@ -11,12 +14,12 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	3.4.1
+Version:	3.4.2
 Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
 Source0:	http://download.gluster.org/pub/gluster/glusterfs/LATEST/glusterfs-%{version}.tar.gz
-# Source0-md5:	dce3d066b7351b360454ea9ca4cabe4c
+# Source0-md5:	7c05304a9aca3c85ff27458461783623
 Source1:	glusterfsd.init
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-noquiet.patch
@@ -208,6 +211,9 @@ EOF
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/glusterfs/%{version}/*/*.la
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/glusterfs/%{version}/*/*/*.la
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/glusterfs/%{version}/*/*/*/*.la
+
+%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/glusterfs/benchmarking
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/glusterfs/python/syncdaemon/README.md
 
 %clean
 rm -rf $RPM_BUILD_ROOT
