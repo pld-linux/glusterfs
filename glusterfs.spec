@@ -14,12 +14,12 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	3.4.3
+Version:	3.5.0
 Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
 Source0:	http://download.gluster.org/pub/gluster/glusterfs/LATEST/glusterfs-%{version}.tar.gz
-# Source0-md5:	52cf3b00d874818e653f075e7dfb82d7
+# Source0-md5:	5c141ba3e5306d550d9092e3d1ad6d50
 Source1:	glusterfsd.init
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-noquiet.patch
@@ -41,6 +41,7 @@ BuildRequires:	readline-devel
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.228
 %{?with_systemtap:BuildRequires:	systemtap-sdt-devel}
+BuildRequires:	zlib-devel >= 1.2.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -66,6 +67,7 @@ Summary:	GlusterFS common files including Translators
 Summary(pl.UTF-8):	Wspólne pliki GlusterFS-a, w tym translatory
 Group:		Libraries
 Requires:	libxml2 >= 1:2.6.19
+Requires:	zlib >= 1.2.0
 
 %description common
 GlusterFS is a clustered file-system capable of scaling to several
@@ -118,6 +120,18 @@ This package provides the development files for GlusterFS library.
 
 %description devel -l pl.UTF-8
 Ten pakiet udostępnia pliki programistyczne biblioteki GlusterFS-a.
+
+%package -n python-gluster
+Summary:	Python interface to GlusterFS libraries
+Summary(pl.UTF-8):	Interfejs Pythona do bibliotek GlusterFS
+Group:		Libraries/Python
+Requires:	%{name}-libs = %{version}-%{release}
+
+%description -n python-gluster
+Python interface to GlusterFS libraries.
+
+%description -n python-gluster -l pl.UTF-8
+Interfejs Pythona do bibliotek GlusterFS.
 
 %package transport-ibverbs
 Summary:	InfiniBand "verbs" transport plugins for GlusterFS
@@ -183,6 +197,8 @@ Agenci OCF do monitorowania procesów GlusterFS-a.
 %{__aclocal}
 %{__autoconf}
 %{__automake}
+%{__python} gen-headers.py
+%{__mv} gf-error-codes.h libglusterfs/src
 %configure \
 	--disable-silent-rules \
 	--enable-fusermount \
@@ -215,6 +231,8 @@ EOF
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/glusterfs/benchmarking
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/glusterfs/python/syncdaemon/README.md
 
+%py_postclean
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -223,7 +241,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files common
 %defattr(644,root,root,755)
-%doc ChangeLog NEWS README THANKS doc/glusterd.vol
+%doc ChangeLog NEWS README THANKS
 %dir %{_sysconfdir}/%{name}
 # NOTE: glusterfs is link to glusterfsd and is needed by client mount
 %attr(755,root,root) %{_sbindir}/glusterfs
@@ -245,9 +263,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/glusterfs/%{version}/xlator/debug
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/debug/*.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/encryption
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/encryption/*.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/encryption/*.so*
 %dir %{_libdir}/glusterfs/%{version}/xlator/features
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/features/*.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/features/*.so*
+%dir %{_libdir}/glusterfs/%{version}/xlator/features/glupy
+%{_libdir}/glusterfs/%{version}/xlator/features/glupy/*.py*
 %dir %{_libdir}/glusterfs/%{version}/xlator/mgmt
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/mgmt/glusterd.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/mount
@@ -256,7 +276,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/glusterfs/%{version}/xlator/nfs
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/nfs/server.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/performance
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/performance/*.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/performance/*.so*
 %dir %{_libdir}/glusterfs/%{version}/xlator/protocol
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/protocol/*.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/storage
@@ -264,15 +284,30 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/glusterfs/%{version}/xlator/system
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/system/posix-acl.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/testing
+%dir %{_libdir}/glusterfs/%{version}/xlator/testing/features
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/testing/features/*.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/testing/performance
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/testing/performance/*.so
 
 %attr(755,root,root) %{_libdir}/glusterfs/gsyncd
+%attr(755,root,root) %{_libdir}/glusterfs/gverify.sh
+%attr(755,root,root) %{_libdir}/glusterfs/peer_add_secret_pub
+%attr(755,root,root) %{_libdir}/glusterfs/peer_gsec_create
 
 %dir %{_libdir}/glusterfs/python
 %dir %{_libdir}/glusterfs/python/syncdaemon
 # gsyncd.py is a script, the rest probably don't require *.py
 %{_libdir}/glusterfs/python/syncdaemon/*.py*
+
+%dir %{_datadir}/glusterfs
+%dir %{_datadir}/glusterfs/scripts
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/generate-gfid-file.sh
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/get-gfid.sh
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/gsync-sync-gfid
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/gsync-upgrade.sh
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/post-upgrade-script-for-quota.sh
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/pre-upgrade-script-for-quota.sh
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/slave-upgrade.sh
 
 %{_mandir}/man8/glusterfs.8*
 %{_mandir}/man8/glusterfsd.8*
@@ -282,6 +317,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgfapi.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgfapi.so.0
+%attr(755,root,root) %{_libdir}/libgfchangelog.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgfchangelog.so.0
 %attr(755,root,root) %{_libdir}/libgfrpc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgfrpc.so.0
 %attr(755,root,root) %{_libdir}/libgfxdr.so.*.*.*
@@ -292,16 +329,25 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgfapi.so
+%attr(755,root,root) %{_libdir}/libgfchangelog.so
 %attr(755,root,root) %{_libdir}/libgfrpc.so
 %attr(755,root,root) %{_libdir}/libgfxdr.so
 %attr(755,root,root) %{_libdir}/libglusterfs.so
 %{_libdir}/libgfapi.la
+%{_libdir}/libgfchangelog.la
 %{_libdir}/libgfrpc.la
 %{_libdir}/libgfxdr.la
 %{_libdir}/libglusterfs.la
 %dir %{_includedir}/glusterfs
 %{_includedir}/glusterfs/api
+%{_includedir}/glusterfs/gfchangelog
 %{_pkgconfigdir}/glusterfs-api.pc
+%{_pkgconfigdir}/libgfchangelog.pc
+
+%files -n python-gluster
+%defattr(644,root,root,755)
+%dir %{py_sitescriptdir}/gluster
+%{py_sitescriptdir}/gluster/*.py[co]
 
 %if %{with ibverbs}
 %files transport-ibverbs

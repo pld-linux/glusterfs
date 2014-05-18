@@ -26,3 +26,29 @@
  
  libgfxdr_la_SOURCES =  xdr-generic.c rpc-common-xdr.c \
  			glusterfs3-xdr.c \
+--- glusterfs-3.5.0/xlators/features/compress/src/Makefile.am.orig	2014-04-17 09:17:07.000000000 +0200
++++ glusterfs-3.5.0/xlators/features/compress/src/Makefile.am	2014-05-18 16:27:41.060277065 +0200
+@@ -4,10 +4,10 @@
+ 
+ noinst_HEADERS = cdc.h cdc-mem-types.h
+ 
+-cdc_la_LDFLAGS = -module -avoidversion $(LIBZ_LIBS)
++cdc_la_LDFLAGS = -module -avoidversion
+ 
+ cdc_la_SOURCES = cdc.c cdc-helper.c
+-cdc_la_LIBADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
++cdc_la_LIBADD = $(top_builddir)/libglusterfs/src/libglusterfs.la $(LIBZ_LIBS)
+ 
+ AM_CPPFLAGS = $(GF_CPPFLAGS) -I$(top_srcdir)/libglusterfs/src -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -D$(GF_HOST_OS) \
+ -shared -nostartfiles  $(LIBZ_CFLAGS)
+--- glusterfs-3.5.0/configure.ac.orig	2014-05-18 15:51:39.493655451 +0200
++++ glusterfs-3.5.0/configure.ac	2014-05-18 16:29:11.676941834 +0200
+@@ -505,7 +505,7 @@
+ # CDC xlator - check if libz is present if so enable HAVE_LIB_Z
+ echo -n "checking if libz is present... "
+ 
+-PKG_CHECK_MODULES([ZLIB], [zlib >= 1.2.0],
++PKG_CHECK_MODULES([LIBZ], [zlib >= 1.2.0],
+                   [echo "yes (features requiring zlib enabled)"  AC_DEFINE(HAVE_LIB_Z, 1, [define if zlib is present])],
+                   [echo "no"] )
+ 
