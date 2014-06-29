@@ -26,14 +26,14 @@
  
  libgfxdr_la_SOURCES =  xdr-generic.c rpc-common-xdr.c \
  			glusterfs3-xdr.c \
---- glusterfs-3.5.0/xlators/features/compress/src/Makefile.am.orig	2014-04-17 09:17:07.000000000 +0200
-+++ glusterfs-3.5.0/xlators/features/compress/src/Makefile.am	2014-05-18 16:27:41.060277065 +0200
+--- glusterfs-3.5.1/xlators/features/compress/src/Makefile.am.orig	2014-06-29 11:36:20.398339217 +0200
++++ glusterfs-3.5.1/xlators/features/compress/src/Makefile.am	2014-06-29 11:47:06.574992416 +0200
 @@ -4,10 +4,10 @@
  
  noinst_HEADERS = cdc.h cdc-mem-types.h
  
--cdc_la_LDFLAGS = -module -avoidversion $(LIBZ_LIBS)
-+cdc_la_LDFLAGS = -module -avoidversion
+-cdc_la_LDFLAGS = -module -avoid-version $(LIBZ_LIBS)
++cdc_la_LDFLAGS = -module -avoid-version
  
  cdc_la_SOURCES = cdc.c cdc-helper.c
 -cdc_la_LIBADD = $(top_builddir)/libglusterfs/src/libglusterfs.la

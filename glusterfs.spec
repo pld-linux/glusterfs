@@ -14,12 +14,12 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	3.5.0
+Version:	3.5.1
 Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
 Source0:	http://download.gluster.org/pub/gluster/glusterfs/LATEST/glusterfs-%{version}.tar.gz
-# Source0-md5:	5c141ba3e5306d550d9092e3d1ad6d50
+# Source0-md5:	a68114c60a7d35831657116a68a42040
 Source1:	glusterfsd.init
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-noquiet.patch
@@ -29,6 +29,7 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	device-mapper-devel >= 2.02.79
 BuildRequires:	flex
+BuildRequires:	glib2-devel >= 2.0
 BuildRequires:	libaio-devel
 BuildRequires:	libfuse-devel >= 2.6
 %{?with_ibverbs:BuildRequires:	libibverbs-devel >= 1.0.4}
@@ -196,9 +197,10 @@ Agenci OCF do monitorowania procesów GlusterFS-a.
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
+%{__autoheader}
 %{__automake}
-%{__python} gen-headers.py
-%{__mv} gf-error-codes.h libglusterfs/src
+#%{__python} gen-headers.py
+#%{__mv} gf-error-codes.h libglusterfs/src
 %configure \
 	--disable-silent-rules \
 	--enable-fusermount \
@@ -243,6 +245,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc ChangeLog NEWS README THANKS
 %dir %{_sysconfdir}/%{name}
+%attr(755,root,root) %{_sbindir}/glfsheal
 # NOTE: glusterfs is link to glusterfsd and is needed by client mount
 %attr(755,root,root) %{_sbindir}/glusterfs
 %attr(755,root,root) %{_sbindir}/glusterfsd
