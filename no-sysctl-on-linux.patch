@@ -1,0 +1,11 @@
+--- glusterfs-3.5.3/xlators/mount/fuse/src/fuse-helpers.c~	2014-11-12 13:51:20.000000000 +0000
++++ glusterfs-3.5.3/xlators/mount/fuse/src/fuse-helpers.c	2014-12-30 19:46:36.645378934 +0000
+@@ -14,7 +14,7 @@
+ #include "fuse-bridge.h"
+ #if defined(GF_SOLARIS_HOST_OS)
+ #include <sys/procfs.h>
+-#else
++#elif !defined(GF_LINUX_HOST_OS)
+ #include <sys/sysctl.h>
+ #endif
+ 

@@ -23,6 +23,7 @@ Source0:	http://download.gluster.org/pub/gluster/glusterfs/3.5/LATEST/glusterfs-
 Source1:	glusterfsd.init
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-noquiet.patch
+Patch2:		no-sysctl-on-linux.patch
 URL:		http://www.gluster.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -192,6 +193,7 @@ Agenci OCF do monitorowania procesów GlusterFS-a.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__libtoolize}
