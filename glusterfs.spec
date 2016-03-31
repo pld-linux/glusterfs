@@ -3,9 +3,6 @@
 # - Check transport-ibverbs package and ibverbs bcond
 # - Add passing options from /etc/sysconfig/glusterfsd to glusterfsd
 # - package /etc/glusterfs/glusterfs-logrotate as logrotate config
-# - package in proper emacs/vim locations:
-#   /usr/share/doc/glusterfs/glusterfs-mode.el
-#   /usr/share/doc/glusterfs/glusterfs.vim
 #
 # Conditional build:
 %bcond_without	ibverbs		# ib-verbs transport
@@ -14,12 +11,12 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	3.5.6
-Release:	2
+Version:	3.5.9
+Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
 Source0:	http://download.gluster.org/pub/gluster/glusterfs/3.5/LATEST/glusterfs-%{version}.tar.gz
-# Source0-md5:	9747256782991ddda2e396439281d92b
+# Source0-md5:	28c3f410b701fe914333ebcc9f3b34ea
 Source1:	glusterfsd.init
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-noquiet.patch
@@ -189,6 +186,32 @@ OCF Resource Agents for GlusterFS processes.
 %description resource-agents -l pl.UTF-8
 Agenci OCF do monitorowania procesów GlusterFS-a.
 
+%package -n emacs-glusterfs-mode
+Summary:	Emacs mode to edit GlusterFS configuration
+Summary(pl.UTF-8):	Tryb Emacsa do edycji konfiguracji GlusterFS-a
+Group:		Applications/Editors
+Requires:	%{name} = %{version}-%{release}
+Requires:	emacs-common
+
+%description -n emacs-glusterfs-mode
+Emacs mode to edit GlusterFS configuration.
+
+%description -n emacs-glusterfs-mode -l pl.UTF-8
+Tryb Emacsa do edycji konfiguracji GlusterFS-a.
+
+%package -n vim-syntax-glusterfs
+Summary:	Vim syntax file to edit GlusterFS configuration
+Summary(pl.UTF-8):	Plik składni Vima do edycji konfiguracji GlusterFS-a
+Group:		Applications/Editors
+Requires:	%{name} = %{version}-%{release}
+Requires:	vim-rt >= 4:7.2.170
+
+%description -n vim-syntax-glusterfs
+Vim syntax file to edit GlusterFS configuration.
+
+%description -n vim-syntax-glusterfs -l pl.UTF-8
+Plik składni Vima do edycji konfiguracji GlusterFS-a.
+
 %prep
 %setup -q
 %patch0 -p1
@@ -220,13 +243,17 @@ install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_var}/lib/glusterd}
 	DESTDIR=$RPM_BUILD_ROOT
 
 # No idea why installs elsewhere than later expects to be
-mv $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/glusterd.vol $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/glusterfsd.vol
+%{__mv} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/glusterd.vol $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/glusterfsd.vol
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/glusterfsd
 install -d $RPM_BUILD_ROOT%{systemdtmpfilesdir}
 cat >>$RPM_BUILD_ROOT%{systemdtmpfilesdir}/gluster.conf <<EOF
 d /var/run/gluster 0755 root root -
 EOF
+
+install -d $RPM_BUILD_ROOT%{_datadir}/{emacs/site-lisp,vim/syntax}
+%{__mv} $RPM_BUILD_ROOT%{_docdir}/glusterfs/glusterfs.vim $RPM_BUILD_ROOT%{_datadir}/vim/syntax
+%{__mv} $RPM_BUILD_ROOT%{_docdir}/glusterfs/glusterfs-mode.el $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/glusterfs/%{version}/*/*.la
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/glusterfs/%{version}/*/*/*.la
@@ -383,3 +410,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_prefix}/lib/ocf/resource.d/glusterfs
 %attr(755,root,root) %{_prefix}/lib/ocf/resource.d/glusterfs/glusterd
 %attr(755,root,root) %{_prefix}/lib/ocf/resource.d/glusterfs/volume
+
+%files -n emacs-glusterfs-mode
+%defattr(644,root,root,755)
+%{_datadir}/emacs/site-lisp/glusterfs-mode.el
+
+%files -n vim-syntax-glusterfs
+%defattr(644,root,root,755)
+%{_datadir}/vim/syntax/glusterfs.vim
