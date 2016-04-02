@@ -12,12 +12,12 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	3.7.9
+Version:	3.7.10
 Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
 Source0:	http://download.gluster.org/pub/gluster/glusterfs/3.7/LATEST/glusterfs-%{version}.tar.gz
-# Source0-md5:	622e8d3557992554528f33d577c95d8b
+# Source0-md5:	174ebbca909e77f933cc6d58d02efa94
 Source1:	glusterfsd.init
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-noquiet.patch
@@ -291,6 +291,7 @@ rm -rf $RPM_BUILD_ROOT
 #%attr(755,root,root) %{_libdir}/ganesha/create-export-ganesha.sh
 #%attr(755,root,root) %{_libdir}/ganesha/dbus-send.sh
 #%attr(755,root,root) %{_libdir}/ganesha/ganesha-ha.sh
+#%attr(755,root,root) %{_libdir}/ganesha/generate-epoch.py
 
 %dir %{_libdir}/glusterfs
 
