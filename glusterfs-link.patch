@@ -1,54 +1,12 @@
---- glusterfs-3.3.1/rpc/Makefile.am.orig	2012-12-17 22:48:54.435191720 +0100
-+++ glusterfs-3.3.1/rpc/Makefile.am	2012-12-17 22:56:20.508515756 +0100
-@@ -1 +1 @@
--SUBDIRS = rpc-lib rpc-transport xdr
-+SUBDIRS = xdr rpc-lib rpc-transport
---- glusterfs-3.3.1/rpc/rpc-lib/src/Makefile.am.orig	2012-12-17 22:16:10.205232660 +0100
-+++ glusterfs-3.3.1/rpc/rpc-lib/src/Makefile.am	2012-12-17 22:48:22.138525726 +0100
-@@ -3,7 +3,7 @@
- libgfrpc_la_SOURCES = auth-unix.c rpcsvc-auth.c rpcsvc.c auth-null.c \
- 	rpc-transport.c xdr-rpc.c xdr-rpcclnt.c rpc-clnt.c auth-glusterfs.c
+--- glusterfs-3.7.5/rpc/rpc-lib/src/Makefile.am.orig	2015-10-07 15:18:14.993228975 +0200
++++ glusterfs-3.7.5/rpc/rpc-lib/src/Makefile.am	2015-10-09 18:28:49.261547744 +0200
+@@ -4,7 +4,8 @@
+ 	rpc-transport.c xdr-rpc.c xdr-rpcclnt.c rpc-clnt.c auth-glusterfs.c \
+ 	rpc-drc.c $(CONTRIBDIR)/sunrpc/xdr_sizeof.c  rpc-clnt-ping.c
  
 -libgfrpc_la_LIBADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
 +libgfrpc_la_LIBADD = $(top_builddir)/libglusterfs/src/libglusterfs.la $(top_builddir)/rpc/xdr/src/libgfxdr.la
++
+ libgfrpc_la_LDFLAGS = -version-info $(LIBGFRPC_LT_VERSION) $(GF_LDFLAGS)
  
  noinst_HEADERS = rpcsvc.h rpc-transport.h xdr-common.h xdr-rpc.h xdr-rpcclnt.h \
- 	rpc-clnt.h rpcsvc-common.h protocol-common.h
---- glusterfs-3.3.1/rpc/xdr/src/Makefile.am.orig	2012-12-17 22:56:45.071848577 +0100
-+++ glusterfs-3.3.1/rpc/xdr/src/Makefile.am	2012-12-17 23:12:22.731829033 +0100
-@@ -6,8 +6,7 @@
- 			-D_GNU_SOURCE -D$(GF_HOST_OS) \
- 			-I$(top_srcdir)/libglusterfs/src -I$(top_srcdir)/rpc/rpc-lib/src
- 
--libgfxdr_la_LIBADD = $(top_builddir)/libglusterfs/src/libglusterfs.la \
--		$(top_builddir)/rpc/rpc-lib/src/libgfrpc.la
-+libgfxdr_la_LIBADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
- 
- libgfxdr_la_SOURCES =  xdr-generic.c rpc-common-xdr.c \
- 			glusterfs3-xdr.c \
---- glusterfs-3.5.1/xlators/features/compress/src/Makefile.am.orig	2014-06-29 11:36:20.398339217 +0200
-+++ glusterfs-3.5.1/xlators/features/compress/src/Makefile.am	2014-06-29 11:47:06.574992416 +0200
-@@ -4,10 +4,10 @@
- 
- noinst_HEADERS = cdc.h cdc-mem-types.h
- 
--cdc_la_LDFLAGS = -module -avoid-version $(LIBZ_LIBS)
-+cdc_la_LDFLAGS = -module -avoid-version
- 
- cdc_la_SOURCES = cdc.c cdc-helper.c
--cdc_la_LIBADD = $(top_builddir)/libglusterfs/src/libglusterfs.la
-+cdc_la_LIBADD = $(top_builddir)/libglusterfs/src/libglusterfs.la $(LIBZ_LIBS)
- 
- AM_CPPFLAGS = $(GF_CPPFLAGS) -I$(top_srcdir)/libglusterfs/src -fPIC -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -D$(GF_HOST_OS) \
- -shared -nostartfiles  $(LIBZ_CFLAGS)
---- glusterfs-3.5.0/configure.ac.orig	2014-05-18 15:51:39.493655451 +0200
-+++ glusterfs-3.5.0/configure.ac	2014-05-18 16:29:11.676941834 +0200
-@@ -505,7 +505,7 @@
- # CDC xlator - check if libz is present if so enable HAVE_LIB_Z
- echo -n "checking if libz is present... "
- 
--PKG_CHECK_MODULES([ZLIB], [zlib >= 1.2.0],
-+PKG_CHECK_MODULES([LIBZ], [zlib >= 1.2.0],
-                   [echo "yes (features requiring zlib enabled)"  AC_DEFINE(HAVE_LIB_Z, 1, [define if zlib is present])],
-                   [echo "no"] )
- 
