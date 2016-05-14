@@ -13,7 +13,7 @@ Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
 Version:	3.7.11
-Release:	1
+Release:	2
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
 Source0:	http://download.gluster.org/pub/gluster/glusterfs/3.7/LATEST/glusterfs-%{version}.tar.gz
@@ -198,7 +198,7 @@ Agenci OCF do monitorowania procesów GlusterFS-a.
 Summary:	Emacs mode to edit GlusterFS configuration
 Summary(pl.UTF-8):	Tryb Emacsa do edycji konfiguracji GlusterFS-a
 Group:		Applications/Editors
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-common = %{version}-%{release}
 Requires:	emacs-common
 
 %description -n emacs-glusterfs-mode
@@ -211,7 +211,7 @@ Tryb Emacsa do edycji konfiguracji GlusterFS-a.
 Summary:	Vim syntax file to edit GlusterFS configuration
 Summary(pl.UTF-8):	Plik składni Vima do edycji konfiguracji GlusterFS-a
 Group:		Applications/Editors
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-common = %{version}-%{release}
 Requires:	vim-rt >= 4:7.2.170
 
 %description -n vim-syntax-glusterfs
