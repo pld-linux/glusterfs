@@ -13,7 +13,7 @@ Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
 Version:	3.7.11
-Release:	2
+Release:	3
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
 Source0:	http://download.gluster.org/pub/gluster/glusterfs/3.7/LATEST/glusterfs-%{version}.tar.gz
@@ -161,6 +161,7 @@ Requires:	%{name}-client = %{version}-%{release}
 Requires:	%{name}-common = %{version}-%{release}
 Requires(post,preun):	/sbin/chkconfig
 Requires:	rc-scripts
+Requires:	python-modules 
 
 %description server
 This package provides the glusterfs server daemon.
