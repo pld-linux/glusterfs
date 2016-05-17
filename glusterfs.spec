@@ -4,6 +4,8 @@
 # - Check transport-ibverbs package and ibverbs bcond
 # - Add passing options from /etc/sysconfig/glusterfsd to glusterfsd
 # - package /etc/glusterfs/glusterfs-logrotate as logrotate config
+# - Fix/provide working systemd service files. 
+#   As for 3.7.11, package provided seems be non-working.
 #
 # Conditional build:
 %bcond_without	ibverbs		# ib-verbs transport
@@ -13,7 +15,7 @@ Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
 Version:	3.7.11
-Release:	3
+Release:	4
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
 Source0:	http://download.gluster.org/pub/gluster/glusterfs/3.7/LATEST/glusterfs-%{version}.tar.gz
@@ -238,7 +240,9 @@ Plik składni Vima do edycji konfiguracji GlusterFS-a.
 	--enable-fusermount \
 	%{!?with_ibverbs:--disable-ibverbs} \
 	--enable-systemtap%{!?with_systemtap:=no} \
-	--with-initdir=/etc/rc.d/init.d
+	--with-initdir=/etc/rc.d/init.d \
+	--with-systemddir=%{systemdunitdir}
+
 
 %{__make} -j1
 
@@ -430,7 +434,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/gfind_missing_files
 %attr(755,root,root) %{_sbindir}/glusterd
 %attr(755,root,root) %{_sbindir}/snap_scheduler.py
+%{systemdunitdir}/glusterd.service
 %{systemdtmpfilesdir}/gluster.conf
+
 %{_mandir}/man8/glusterd.8*
 %dir %{_var}/lib/glusterd
 %dir %{_var}/lib/glusterd/groups
