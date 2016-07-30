@@ -1,11 +1,14 @@
---- glusterfs-3.7.9/configure.ac.orig	2016-03-31 21:42:00.820154766 +0200
-+++ glusterfs-3.7.9/configure.ac	2016-04-01 17:09:46.650547715 +0200
-@@ -1203,7 +1203,7 @@
- esac
+--- glusterfs-3.8.0/configure.ac.orig	2016-06-30 16:30:27.589981118 +0200
++++ glusterfs-3.8.0/configure.ac	2016-07-02 15:01:01.156248952 +0200
+@@ -1147,9 +1147,9 @@
+     PYTHONDEV_CPPFLAGS=`echo ${PYTHONDEV_CPPFLAGS} | sed -e 's/-Wp,-D_FORTIFY_SOURCE=[[0-9]]//g'`
  
- if test "x$BUILD_GLUPY" = "xyes"; then
--   BUILD_PYTHON_SITE_PACKAGES=`$PYTHON -c 'from distutils.sysconfig import get_python_lib; print(get_python_lib())'`
-+   BUILD_PYTHON_SITE_PACKAGES=`$PYTHON -c 'from distutils.sysconfig import get_python_lib; print(get_python_lib(prefix="'$prefix'"))'`
-    BUILD_PYTHON_INC=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_inc()"`
-    BUILD_PYTHON_LIB=python$PYTHON_VERSION
-    GLUPY_SUBDIR=glupy
+     dnl Find python libs at user configured libdir and also "lib" under prefix
+-    PYTHONDEV_LDFLAGS="${PYTHON_LIBS} -L`${PYTHON}-config --prefix`/lib -L`${PYTHON}-config --prefix`/$libdir `${PYTHON}-config --ldflags`"
++    PYTHONDEV_LDFLAGS="${PYTHON_LIBS} `${PYTHON}-config --ldflags`"
+ 
+-    BUILD_PYTHON_SITE_PACKAGES=`$PYTHON -c 'from distutils.sysconfig import get_python_lib; print(get_python_lib(prefix="${exec_prefix}"))'`
++    BUILD_PYTHON_SITE_PACKAGES=`$PYTHON -c 'from distutils.sysconfig import get_python_lib; print(get_python_lib(prefix="'${prefix}'"))'`
+     BUILD_PYTHON_INC=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_inc()"`
+     BUILD_PYTHON_LIB=python$PYTHON_VERSION
+ 

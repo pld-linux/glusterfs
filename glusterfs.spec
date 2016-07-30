@@ -6,6 +6,7 @@
 # - package /etc/glusterfs/glusterfs-logrotate as logrotate config
 # - Fix/provide working systemd service files. 
 #   As for 3.7.11, package provided seems be non-working.
+# - configuration for firewalld? (--enable-firewalld, but checks for firewalld executable)
 #
 # Conditional build:
 %bcond_without	ibverbs		# ib-verbs transport
@@ -14,12 +15,12 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	3.7.12
+Version:	3.8.0
 Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
-Source0:	http://download.gluster.org/pub/gluster/glusterfs/3.7/LATEST/glusterfs-%{version}.tar.gz
-# Source0-md5:	1ae574a796cdb846e455f50cfe4c4622
+Source0:	http://download.gluster.org/pub/gluster/glusterfs/3.8/LATEST/glusterfs-%{version}.tar.gz
+# Source0-md5:	db1880ad32ef1114ce52060b266907cb
 Source1:	glusterfsd.init
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-noquiet.patch
@@ -29,14 +30,15 @@ BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	bison
-# cmocka >= 1.0.1 for unittest
+#BuildRequires:	cmocka-devel >= 1.0.1 for unittest
+# for bd-xlator
 BuildRequires:	device-mapper-devel >= 2.02.79
 BuildRequires:	flex
 BuildRequires:	glib2-devel >= 2.0
 BuildRequires:	libaio-devel
 BuildRequires:	libfuse-devel >= 2.6
 %{?with_ibverbs:BuildRequires:	libibverbs-devel >= 1.0.4}
-%{?with_ibverbs:BuildRequires:	librdmacm-devel >= 1.0.4}
+%{?with_ibverbs:BuildRequires:	librdmacm-devel >= 1.0.15}
 BuildRequires:	libtool
 BuildRequires:	libuuid-devel
 BuildRequires:	libxml2-devel >= 1:2.6.19
@@ -148,6 +150,7 @@ Summary(pl.UTF-8):	Wtyczki transportu "verbs" InfiniBand dla GlusterFS-a
 Group:		Libraries
 Requires:	%{name}-common = %{version}-%{release}
 Requires:	libibverbs >= 1.0.4
+Requires:	librdmacm >= 1.0.15
 
 %description transport-ibverbs
 InfiniBand "verbs" transport plugins for GlusterFS.
@@ -408,6 +411,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/glusterfs/api
 %{_includedir}/glusterfs/gfchangelog
 %{_includedir}/glusterfs/gfdb
+%{_includedir}/glusterfs/rpc
+%{_includedir}/glusterfs/server
+%{_includedir}/glusterfs/*.h
 %{_pkgconfigdir}/glusterfs-api.pc
 %{_pkgconfigdir}/libgfchangelog.pc
 %{_pkgconfigdir}/libgfdb.pc
