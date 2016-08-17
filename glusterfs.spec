@@ -15,16 +15,17 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	3.8.1
+Version:	3.8.2
 Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
 Source0:	http://download.gluster.org/pub/gluster/glusterfs/3.8/LATEST/glusterfs-%{version}.tar.gz
-# Source0-md5:	91ea44c6138c74a743a04c16c3ac73d1
+# Source0-md5:	4e3609b6a9b7e0ff49adee6581e03d5c
 Source1:	glusterfsd.init
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-noquiet.patch
 Patch2:		%{name}-python.patch
+Patch3:		systemd.patch
 URL:		http://www.gluster.org/
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.50
@@ -231,6 +232,7 @@ Plik składni Vima do edycji konfiguracji GlusterFS-a.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %{__libtoolize}
@@ -456,7 +458,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/add-brick/pre/S28Quota-enable-root-xattr-heal.sh
 %dir %{_var}/lib/glusterd/hooks/1/delete
 %dir %{_var}/lib/glusterd/hooks/1/delete/post
-%attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/delete/post/S57glusterfind-delete-post.py
+%attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/delete/post/S57glusterfind-delete-post
 %dir %{_var}/lib/glusterd/hooks/1/gsync-create
 %dir %{_var}/lib/glusterd/hooks/1/gsync-create/post
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/gsync-create/post/S56glusterd-geo-rep-create-post.sh
