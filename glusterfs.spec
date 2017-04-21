@@ -15,17 +15,18 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	3.8.7
+Version:	3.8.11
 Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
 Source0:	http://download.gluster.org/pub/gluster/glusterfs/3.8/LATEST/glusterfs-%{version}.tar.gz
-# Source0-md5:	10be82c9d9492b092e41dabbe966a52e
+# Source0-md5:	1a9cc4feb1c09bce36f5b095cae64807
 Source1:	glusterfsd.init
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-noquiet.patch
 Patch2:		%{name}-python.patch
 Patch3:		systemd.patch
+Patch4:		interpreters.patch
 URL:		http://www.gluster.org/
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.50
@@ -50,6 +51,7 @@ BuildRequires:	python-devel >= 1:2.4
 BuildRequires:	readline-devel
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.228
+BuildRequires:	sed >= 4.0
 BuildRequires:	sqlite3-devel >= 3
 %{?with_systemtap:BuildRequires:	systemtap-sdt-devel}
 BuildRequires:	userspace-rcu-devel >= 0.8
@@ -233,6 +235,7 @@ Plik składni Vima do edycji konfiguracji GlusterFS-a.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 %{__libtoolize}
@@ -462,9 +465,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_var}/lib/glusterd/hooks/1/gsync-create
 %dir %{_var}/lib/glusterd/hooks/1/gsync-create/post
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/gsync-create/post/S56glusterd-geo-rep-create-post.sh
-%dir %{_var}/lib/glusterd/hooks/1/reset
-%dir %{_var}/lib/glusterd/hooks/1/reset/post
-%attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/reset/post/S31ganesha-reset.sh
 %dir %{_var}/lib/glusterd/hooks/1/set
 %dir %{_var}/lib/glusterd/hooks/1/set/post
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/set/post/S30samba-set.sh

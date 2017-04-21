@@ -1,0 +1,153 @@
+diff -dur glusterfs-3.8.11.orig/extras/ganesha/scripts/generate-epoch.py glusterfs-3.8.11/extras/ganesha/scripts/generate-epoch.py
+--- glusterfs-3.8.11.orig/extras/ganesha/scripts/generate-epoch.py	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/extras/ganesha/scripts/generate-epoch.py	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python2
+ #
+ # Copyright (c) 2016 Red Hat, Inc. <http://www.redhat.com>
+ # This file is part of GlusterFS.
+diff -dur glusterfs-3.8.11.orig/extras/geo-rep/schedule_georep.py.in glusterfs-3.8.11/extras/geo-rep/schedule_georep.py.in
+--- glusterfs-3.8.11.orig/extras/geo-rep/schedule_georep.py.in	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/extras/geo-rep/schedule_georep.py.in	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ """
+ Schedule Geo-replication
+ ------------------------
+diff -dur glusterfs-3.8.11.orig/extras/snap_scheduler/gcron.py glusterfs-3.8.11/extras/snap_scheduler/gcron.py
+--- glusterfs-3.8.11.orig/extras/snap_scheduler/gcron.py	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/extras/snap_scheduler/gcron.py	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ #
+ # Copyright (c) 2015 Red Hat, Inc. <http://www.redhat.com>
+ # This file is part of GlusterFS.
+diff -dur glusterfs-3.8.11.orig/extras/snap_scheduler/snap_scheduler.py glusterfs-3.8.11/extras/snap_scheduler/snap_scheduler.py
+--- glusterfs-3.8.11.orig/extras/snap_scheduler/snap_scheduler.py	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/extras/snap_scheduler/snap_scheduler.py	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ #
+ # Copyright (c) 2015 Red Hat, Inc. <http://www.redhat.com>
+ # This file is part of GlusterFS.
+diff -dur glusterfs-3.8.11.orig/extras/stop-all-gluster-processes.sh glusterfs-3.8.11/extras/stop-all-gluster-processes.sh
+--- glusterfs-3.8.11.orig/extras/stop-all-gluster-processes.sh	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/extras/stop-all-gluster-processes.sh	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env bash
++#!/bin/bash
+ 
+ # global
+ errors=0
+diff -dur glusterfs-3.8.11.orig/geo-replication/src/peer_mountbroker.in glusterfs-3.8.11/geo-replication/src/peer_mountbroker.in
+--- glusterfs-3.8.11.orig/geo-replication/src/peer_mountbroker.in	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/geo-replication/src/peer_mountbroker.in	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ import os
+ from argparse import ArgumentParser, RawDescriptionHelpFormatter
+ import json
+diff -dur glusterfs-3.8.11.orig/tools/gfind_missing_files/gfid_to_path.py glusterfs-3.8.11/tools/gfind_missing_files/gfid_to_path.py
+--- glusterfs-3.8.11.orig/tools/gfind_missing_files/gfid_to_path.py	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/tools/gfind_missing_files/gfid_to_path.py	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ 
+ # Copyright (c) 2015 Red Hat, Inc. <http://www.redhat.com/>
+ # This file is part of GlusterFS.
+diff -dur glusterfs-3.8.11.orig/tools/glusterfind/glusterfind.in glusterfs-3.8.11/tools/glusterfind/glusterfind.in
+--- glusterfs-3.8.11.orig/tools/glusterfind/glusterfind.in	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/tools/glusterfind/glusterfind.in	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ 
+ # Copyright (c) 2015 Red Hat, Inc. <http://www.redhat.com/>
+ # This file is part of GlusterFS.
+diff -dur glusterfs-3.8.11.orig/tools/glusterfind/src/brickfind.py glusterfs-3.8.11/tools/glusterfind/src/brickfind.py
+--- glusterfs-3.8.11.orig/tools/glusterfind/src/brickfind.py	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/tools/glusterfind/src/brickfind.py	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ # -*- coding: utf-8 -*-
+ 
+ # Copyright (c) 2015 Red Hat, Inc. <http://www.redhat.com/>
+diff -dur glusterfs-3.8.11.orig/tools/glusterfind/src/changelogdata.py glusterfs-3.8.11/tools/glusterfind/src/changelogdata.py
+--- glusterfs-3.8.11.orig/tools/glusterfind/src/changelogdata.py	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/tools/glusterfind/src/changelogdata.py	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ # -*- coding: utf-8 -*-
+ 
+ # Copyright (c) 2015 Red Hat, Inc. <http://www.redhat.com/>
+diff -dur glusterfs-3.8.11.orig/tools/glusterfind/src/changelog.py glusterfs-3.8.11/tools/glusterfind/src/changelog.py
+--- glusterfs-3.8.11.orig/tools/glusterfind/src/changelog.py	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/tools/glusterfind/src/changelog.py	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ # -*- coding: utf-8 -*-
+ 
+ # Copyright (c) 2015 Red Hat, Inc. <http://www.redhat.com/>
+diff -dur glusterfs-3.8.11.orig/tools/glusterfind/src/conf.py glusterfs-3.8.11/tools/glusterfind/src/conf.py
+--- glusterfs-3.8.11.orig/tools/glusterfind/src/conf.py	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/tools/glusterfind/src/conf.py	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ # -*- coding: utf-8 -*-
+ 
+ # Copyright (c) 2015 Red Hat, Inc. <http://www.redhat.com/>
+diff -dur glusterfs-3.8.11.orig/tools/glusterfind/src/__init__.py glusterfs-3.8.11/tools/glusterfind/src/__init__.py
+--- glusterfs-3.8.11.orig/tools/glusterfind/src/__init__.py	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/tools/glusterfind/src/__init__.py	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ # -*- coding: utf-8 -*-
+ 
+ # Copyright (c) 2015 Red Hat, Inc. <http://www.redhat.com/>
+diff -dur glusterfs-3.8.11.orig/tools/glusterfind/src/libgfchangelog.py glusterfs-3.8.11/tools/glusterfind/src/libgfchangelog.py
+--- glusterfs-3.8.11.orig/tools/glusterfind/src/libgfchangelog.py	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/tools/glusterfind/src/libgfchangelog.py	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ # -*- coding: utf-8 -*-
+ 
+ # Copyright (c) 2015 Red Hat, Inc. <http://www.redhat.com/>
+diff -dur glusterfs-3.8.11.orig/tools/glusterfind/src/main.py glusterfs-3.8.11/tools/glusterfind/src/main.py
+--- glusterfs-3.8.11.orig/tools/glusterfind/src/main.py	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/tools/glusterfind/src/main.py	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ # -*- coding: utf-8 -*-
+ 
+ # Copyright (c) 2015 Red Hat, Inc. <http://www.redhat.com/>
+diff -dur glusterfs-3.8.11.orig/tools/glusterfind/src/nodeagent.py glusterfs-3.8.11/tools/glusterfind/src/nodeagent.py
+--- glusterfs-3.8.11.orig/tools/glusterfind/src/nodeagent.py	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/tools/glusterfind/src/nodeagent.py	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ # -*- coding: utf-8 -*-
+ 
+ # Copyright (c) 2015 Red Hat, Inc. <http://www.redhat.com/>
+diff -dur glusterfs-3.8.11.orig/tools/glusterfind/src/utils.py glusterfs-3.8.11/tools/glusterfind/src/utils.py
+--- glusterfs-3.8.11.orig/tools/glusterfind/src/utils.py	2017-04-11 10:33:35.000000000 +0200
++++ glusterfs-3.8.11/tools/glusterfind/src/utils.py	2017-04-21 14:55:35.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ # -*- coding: utf-8 -*-
+ 
+ # Copyright (c) 2015 Red Hat, Inc. <http://www.redhat.com/>
