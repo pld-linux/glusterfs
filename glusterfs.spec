@@ -15,19 +15,19 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	3.8.11
+Version:	3.10.1
 Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
-Source0:	http://download.gluster.org/pub/gluster/glusterfs/3.8/LATEST/glusterfs-%{version}.tar.gz
-# Source0-md5:	1a9cc4feb1c09bce36f5b095cae64807
+Source0:	https://download.gluster.org/pub/gluster/glusterfs/3.10/LATEST/glusterfs-%{version}.tar.gz
+# Source0-md5:	a14b97098baec020054943d061261d61
 Source1:	glusterfsd.init
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-noquiet.patch
 Patch2:		%{name}-python.patch
 Patch3:		systemd.patch
 Patch4:		interpreters.patch
-URL:		http://www.gluster.org/
+URL:		https://www.gluster.org/
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -203,6 +203,36 @@ OCF Resource Agents for GlusterFS processes.
 %description resource-agents -l pl.UTF-8
 Agenci OCF do monitorowania procesów GlusterFS-a.
 
+%package events
+Summary:	GlusterFS Events
+Summary(pl.UTF-8):	Obsługa zdarzeń dla GlusterFS-a
+Group:		Applications/File
+Requires:	%{name}-server = %{version}-%{release}
+Requires:	python-gluster = %{version}-%{release}
+Requires:	python-prettytable
+Requires:	python-requests
+
+%description events
+GlusterFS Events.
+
+%description events -l pl.UTF-8
+Obsługa zdarzeń dla GlusterFS-a.
+
+%package geo-replication
+Summary:	GlusterFS Geo-replication
+Summary(pl.UTF-8):	Geo-replikacja dla GlusterFS-a
+Group:		Applications/File
+Requires:	%{name}-server = %{version}-%{release}
+Requires:	python-gluster = %{version}-%{release}
+Requires:	python-prettytable
+Requires:	rsync
+
+%description geo-replication
+GlusterFS support for geo-replication.
+
+%description geo-replication -l pl.UTF-8
+Obsługa geo-replikacji dla GlusterFS-a.
+
 %package -n emacs-glusterfs-mode
 Summary:	Emacs mode to edit GlusterFS configuration
 Summary(pl.UTF-8):	Tryb Emacsa do edycji konfiguracji GlusterFS-a
@@ -291,6 +321,39 @@ rm -rf $RPM_BUILD_ROOT
 %post	libs	-p /sbin/ldconfig
 %postun	libs	-p /sbin/ldconfig
 
+%if 0
+# TODO: verify these scripts (see also included glusterfs.spec)
+%post server
+# note: glusterfsd.init vs glusterd.service
+/sbin/chkconfig --add glusterfsd
+%service glusterfsd restart
+%systemd_post glusterd.service
+# TODO?
+#glusterd --xlator-option *.upgrade=on -N
+
+%preun server
+if [ "$1" = "0" ]; then
+	%service -q glusterfsd stop
+	/sbin/chkconfig --del glusterfsd
+fi
+%systemd_preun glusterd
+
+%postun server
+%systemd_reload
+
+%post events
+%systemd_post glustereventsd
+
+%preun events
+%systemd_preun glustereventsd
+
+%postun events
+%systemd_reload
+
+%post geo-replication
+%service glusterd restart
+%endif
+
 %files common
 %defattr(644,root,root,755)
 %doc ChangeLog NEWS README.md THANKS
@@ -349,34 +412,16 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/glusterfs/%{version}/xlator/testing/performance
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/testing/performance/*.so
 
-%attr(755,root,root) %{_libdir}/glusterfs/gsyncd
-%attr(755,root,root) %{_libdir}/glusterfs/gverify.sh
 %attr(755,root,root) %{_libdir}/glusterfs/peer_add_secret_pub
-%attr(755,root,root) %{_libdir}/glusterfs/peer_gsec_create
-
-%dir %{_libdir}/glusterfs/gfind_missing_files
-%attr(755,root,root) %{_libdir}/glusterfs/gfind_missing_files/*
 
 %{_libdir}/glusterfs/glusterfind
 
 %dir %{_libdir}/glusterfs/python
-%dir %{_libdir}/glusterfs/python/syncdaemon
-# gsyncd.py is a script, the rest probably don't require *.py
-%{_libdir}/glusterfs/python/syncdaemon/*.py*
-
-%attr(755,root,root) %{_libdir}/glusterfs/peer_mountbroker
-%attr(755,root,root) %{_libdir}/glusterfs/set_geo_rep_pem_keys.sh
 
 %dir %{_datadir}/glusterfs
 %dir %{_datadir}/glusterfs/scripts
-%attr(755,root,root) %{_datadir}/glusterfs/scripts/generate-gfid-file.sh
-%attr(755,root,root) %{_datadir}/glusterfs/scripts/get-gfid.sh
-%attr(755,root,root) %{_datadir}/glusterfs/scripts/gsync-sync-gfid
-%attr(755,root,root) %{_datadir}/glusterfs/scripts/gsync-upgrade.sh
 %attr(755,root,root) %{_datadir}/glusterfs/scripts/post-upgrade-script-for-quota.sh
 %attr(755,root,root) %{_datadir}/glusterfs/scripts/pre-upgrade-script-for-quota.sh
-%attr(755,root,root) %{_datadir}/glusterfs/scripts/schedule_georep.py
-%attr(755,root,root) %{_datadir}/glusterfs/scripts/slave-upgrade.sh
 %attr(755,root,root) %{_datadir}/glusterfs/scripts/stop-all-gluster-processes.sh
 
 %{_mandir}/man8/glusterfs.8*
@@ -427,6 +472,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %dir %{py_sitescriptdir}/gluster
 %{py_sitescriptdir}/gluster/*.py[co]
+%{py_sitescriptdir}/gluster/cliutils
 %{py_sitescriptdir}/gluster/glupy
 # created only when using py_build/py_install in xlators/features/glupy/src
 #%{py_sitescriptdir}/glusterfs_glupy-%{version}-py*.egg-info
@@ -441,8 +487,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/glusterfsd.vol
 %attr(754,root,root) /etc/rc.d/init.d/glusterfsd
+%attr(755,root,root) %{_sbindir}/conf.py
 %attr(755,root,root) %{_sbindir}/gcron.py
-%attr(755,root,root) %{_sbindir}/gfind_missing_files
+%attr(755,root,root) %{_sbindir}/gf_attach
 %attr(755,root,root) %{_sbindir}/glusterd
 %attr(755,root,root) %{_sbindir}/snap_scheduler.py
 %{systemdunitdir}/glusterd.service
@@ -451,6 +498,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/glusterd.8*
 %dir %{_var}/lib/glusterd
 %dir %{_var}/lib/glusterd/groups
+%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/groups/metadata-cache
 %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/groups/virt
 %dir %{_var}/lib/glusterd/hooks
 %dir %{_var}/lib/glusterd/hooks/1
@@ -462,9 +510,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_var}/lib/glusterd/hooks/1/delete
 %dir %{_var}/lib/glusterd/hooks/1/delete/post
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/delete/post/S57glusterfind-delete-post
-%dir %{_var}/lib/glusterd/hooks/1/gsync-create
-%dir %{_var}/lib/glusterd/hooks/1/gsync-create/post
-%attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/gsync-create/post/S56glusterd-geo-rep-create-post.sh
 %dir %{_var}/lib/glusterd/hooks/1/set
 %dir %{_var}/lib/glusterd/hooks/1/set/post
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/set/post/S30samba-set.sh
@@ -496,6 +541,43 @@ rm -rf $RPM_BUILD_ROOT
 #%{_prefix}/lib/ocf/resource.d/heartbeat/ganesha_grace
 #%{_prefix}/lib/ocf/resource.d/heartbeat/ganesha_mon
 #%{_prefix}/lib/ocf/resource.d/heartbeat/ganesha_nfsd
+
+%files events
+%defattr(644,root,root,755)
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/glusterfs/eventsconfig.json
+%attr(755,root,root) %{_sbindir}/gluster-eventsapi
+%attr(755,root,root) %{_sbindir}/glustereventsd
+%{_libdir}/glusterfs/events
+%{_libdir}/glusterfs/peer_eventsapi.py*
+%{_datadir}/glusterfs/scripts/eventsdash.py
+%{systemdunitdir}/glustereventsd.service
+
+%files geo-replication
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/gfind_missing_files
+%attr(755,root,root) %{_sbindir}/gluster-georep-sshkey
+%attr(755,root,root) %{_sbindir}/gluster-mountbroker
+%attr(755,root,root) %{_libdir}/glusterfs/gsyncd
+%attr(755,root,root) %{_libdir}/glusterfs/gverify.sh
+%attr(755,root,root) %{_libdir}/glusterfs/peer_georep-sshkey.py*
+%attr(755,root,root) %{_libdir}/glusterfs/peer_gsec_create
+%attr(755,root,root) %{_libdir}/glusterfs/peer_mountbroker
+%attr(755,root,root) %{_libdir}/glusterfs/peer_mountbroker.py*
+%attr(755,root,root) %{_libdir}/glusterfs/set_geo_rep_pem_keys.sh
+%dir %{_libdir}/glusterfs/gfind_missing_files
+%attr(755,root,root) %{_libdir}/glusterfs/gfind_missing_files/*
+%dir %{_libdir}/glusterfs/python/syncdaemon
+# gsyncd.py is a script, the rest probably don't require *.py
+%{_libdir}/glusterfs/python/syncdaemon/*.py*
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/generate-gfid-file.sh
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/get-gfid.sh
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/gsync-sync-gfid
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/gsync-upgrade.sh
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/schedule_georep.py
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/slave-upgrade.sh
+%dir %{_var}/lib/glusterd/hooks/1/gsync-create
+%dir %{_var}/lib/glusterd/hooks/1/gsync-create/post
+%attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/gsync-create/post/S56glusterd-geo-rep-create-post.sh
 
 %files -n emacs-glusterfs-mode
 %defattr(644,root,root,755)
