@@ -305,7 +305,7 @@ install -d $RPM_BUILD_ROOT%{_datadir}/{emacs/site-lisp,vim/syntax}
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/glusterfs/%{version}/*/*/*/*.la
 
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/glusterfs/benchmarking
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/glusterfs/python/syncdaemon/README.md
+%{__rm} $RPM_BUILD_ROOT%{_libexecdir}/glusterfs/python/syncdaemon/README.md
 # example, installed as /var/lib/glusterd/groups/virt
 %{__rm} $RPM_BUILD_ROOT%{_sysconfdir}/glusterfs/group-virt.example
 
@@ -403,11 +403,25 @@ fi
 %dir %{_libdir}/glusterfs/%{version}/xlator/testing/performance
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/testing/performance/*.so
 
-%attr(755,root,root) %{_libdir}/glusterfs/peer_add_secret_pub
+%if "%{_libexecdir}" != "%{_libdir}"
+%dir %{_libexecdir}/glusterfs
+%endif
+%attr(755,root,root) %{_libexecdir}/glusterfs/peer_add_secret_pub
 
-%{_libdir}/glusterfs/glusterfind
+%dir %{_libexecdir}/glusterfs/glusterfind
+%attr(755,root,root) %{_libexecdir}/glusterfs/glusterfind/S57glusterfind-delete-post.py
+%attr(755,root,root) %{_libexecdir}/glusterfs/glusterfind/brickfind.py
+%attr(755,root,root) %{_libexecdir}/glusterfs/glusterfind/changelog.py
+%attr(755,root,root) %{_libexecdir}/glusterfs/glusterfind/nodeagent.py
+%{_libexecdir}/glusterfs/glusterfind/__init__.py*
+%{_libexecdir}/glusterfs/glusterfind/changelogdata.py*
+%{_libexecdir}/glusterfs/glusterfind/conf.py*
+%{_libexecdir}/glusterfs/glusterfind/libgfchangelog.py*
+%{_libexecdir}/glusterfs/glusterfind/main.py*
+%{_libexecdir}/glusterfs/glusterfind/utils.py*
+%{_libexecdir}/glusterfs/glusterfind/tool.conf
 
-%dir %{_libdir}/glusterfs/python
+%dir %{_libexecdir}/glusterfs/python
 
 %dir %{_datadir}/glusterfs
 %dir %{_datadir}/glusterfs/scripts
@@ -548,8 +562,15 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/glusterfs/eventsconfig.json
 %attr(755,root,root) %{_sbindir}/gluster-eventsapi
 %attr(755,root,root) %{_sbindir}/glustereventsd
-%{_libdir}/glusterfs/events
-%{_libdir}/glusterfs/peer_eventsapi.py*
+%dir %{_libexecdir}/glusterfs/events
+%attr(755,root,root) %{_libexecdir}/glusterfs/events/glustereventsd.py
+%{_libexecdir}/glusterfs/events/__init__.py*
+%{_libexecdir}/glusterfs/events/eventsapiconf.py*
+%{_libexecdir}/glusterfs/events/eventtypes.py*
+%{_libexecdir}/glusterfs/events/gf_event.py*
+%{_libexecdir}/glusterfs/events/handlers.py*
+%{_libexecdir}/glusterfs/events/utils.py*
+%{_libexecdir}/glusterfs/peer_eventsapi.py*
 %{_datadir}/glusterfs/scripts/eventsdash.py
 %{systemdunitdir}/glustereventsd.service
 
@@ -558,18 +579,18 @@ fi
 %attr(755,root,root) %{_sbindir}/gfind_missing_files
 %attr(755,root,root) %{_sbindir}/gluster-georep-sshkey
 %attr(755,root,root) %{_sbindir}/gluster-mountbroker
-%attr(755,root,root) %{_libdir}/glusterfs/gsyncd
-%attr(755,root,root) %{_libdir}/glusterfs/gverify.sh
-%attr(755,root,root) %{_libdir}/glusterfs/peer_georep-sshkey.py*
-%attr(755,root,root) %{_libdir}/glusterfs/peer_gsec_create
-%attr(755,root,root) %{_libdir}/glusterfs/peer_mountbroker
-%attr(755,root,root) %{_libdir}/glusterfs/peer_mountbroker.py*
-%attr(755,root,root) %{_libdir}/glusterfs/set_geo_rep_pem_keys.sh
-%dir %{_libdir}/glusterfs/gfind_missing_files
-%attr(755,root,root) %{_libdir}/glusterfs/gfind_missing_files/*
-%dir %{_libdir}/glusterfs/python/syncdaemon
+%attr(755,root,root) %{_libexecdir}/glusterfs/gsyncd
+%attr(755,root,root) %{_libexecdir}/glusterfs/gverify.sh
+%attr(755,root,root) %{_libexecdir}/glusterfs/peer_georep-sshkey.py*
+%attr(755,root,root) %{_libexecdir}/glusterfs/peer_gsec_create
+%attr(755,root,root) %{_libexecdir}/glusterfs/peer_mountbroker
+%attr(755,root,root) %{_libexecdir}/glusterfs/peer_mountbroker.py*
+%attr(755,root,root) %{_libexecdir}/glusterfs/set_geo_rep_pem_keys.sh
+%dir %{_libexecdir}/glusterfs/gfind_missing_files
+%attr(755,root,root) %{_libexecdir}/glusterfs/gfind_missing_files/*
+%dir %{_libexecdir}/glusterfs/python/syncdaemon
 # gsyncd.py is a script, the rest probably don't require *.py
-%{_libdir}/glusterfs/python/syncdaemon/*.py*
+%{_libexecdir}/glusterfs/python/syncdaemon/*.py*
 %attr(755,root,root) %{_datadir}/glusterfs/scripts/generate-gfid-file.sh
 %attr(755,root,root) %{_datadir}/glusterfs/scripts/get-gfid.sh
 %attr(755,root,root) %{_datadir}/glusterfs/scripts/gsync-sync-gfid
