@@ -1,5 +1,4 @@
 # TODO:
-# - package ganesha specific files? (no ganesha in PLD yet)
 # - Find pidfiles killproc --pidfile ${PIDFILE} -TERM instead of kill -TERM ${PID}
 # - Check transport-ibverbs package and ibverbs bcond
 # - Add passing options from /etc/sysconfig/glusterfsd to glusterfsd
@@ -11,22 +10,22 @@
 # Conditional build:
 %bcond_without	ibverbs		# ib-verbs transport
 %bcond_without	systemtap	# systemtap/dtrace support
+%bcond_without	system_fuse	# system fusermount
 #
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	3.10.4
+Version:	3.12.4
 Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
-Source0:	https://download.gluster.org/pub/gluster/glusterfs/3.10/LATEST/glusterfs-%{version}.tar.gz
-# Source0-md5:	4e1771c08523a3ab32356e4899b088f5
+Source0:	https://download.gluster.org/pub/gluster/glusterfs/3.12/LATEST/glusterfs-%{version}.tar.gz
+# Source0-md5:	722c1acdf0b72e0f1507fa462e7cda65
 Source1:	glusterfsd.init
-Patch0:		%{name}-link.patch
-Patch1:		%{name}-noquiet.patch
-Patch2:		%{name}-python.patch
-Patch3:		systemd.patch
-Patch4:		interpreters.patch
+Patch0:		%{name}-noquiet.patch
+Patch1:		%{name}-python.patch
+Patch2:		systemd.patch
+Patch3:		interpreters.patch
 URL:		https://www.gluster.org/
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.50
@@ -36,9 +35,7 @@ BuildRequires:	bison
 # for bd-xlator
 BuildRequires:	device-mapper-devel >= 2.02.79
 BuildRequires:	flex
-BuildRequires:	glib2-devel >= 2.0
 BuildRequires:	libaio-devel
-BuildRequires:	libfuse-devel >= 2.6
 %{?with_ibverbs:BuildRequires:	libibverbs-devel >= 1.0.4}
 %{?with_ibverbs:BuildRequires:	librdmacm-devel >= 1.0.15}
 BuildRequires:	libtool
@@ -182,7 +179,7 @@ Summary:	GlusterFS Client
 Summary(pl.UTF-8):	Klient GlusterFS
 Group:		Applications/System
 Requires:	%{name}-common = %{version}-%{release}
-Requires:	libfuse >= 2.6
+%{?with_system_fuse:Requires:	libfuse >= 2.6}
 
 %description client
 This package provides the FUSE based GlusterFS client.
@@ -265,7 +262,6 @@ Plik składni Vima do edycji konfiguracji GlusterFS-a.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 
 %build
 %{__libtoolize}
@@ -274,8 +270,8 @@ Plik składni Vima do edycji konfiguracji GlusterFS-a.
 %{__autoheader}
 %{__automake}
 %configure \
+	%{?with_system_fuse:--disable-fusermount} \
 	--disable-silent-rules \
-	--enable-fusermount \
 	%{!?with_ibverbs:--disable-ibverbs} \
 	--enable-systemtap%{!?with_systemtap:=no} \
 	--with-initdir=/etc/rc.d/init.d \
@@ -357,17 +353,12 @@ fi
 %files common
 %defattr(644,root,root,755)
 %doc ChangeLog NEWS README.md THANKS
-%dir %{_sysconfdir}/%{name}
 %attr(755,root,root) %{_bindir}/glusterfind
 %attr(755,root,root) %{_sbindir}/glfsheal
 # NOTE: glusterfs is link to glusterfsd and is needed by client mount
 %attr(755,root,root) %{_sbindir}/glusterfs
 %attr(755,root,root) %{_sbindir}/glusterfsd
-
-#%attr(755,root,root) %{_libdir}/ganesha/create-export-ganesha.sh
-#%attr(755,root,root) %{_libdir}/ganesha/dbus-send.sh
-#%attr(755,root,root) %{_libdir}/ganesha/ganesha-ha.sh
-#%attr(755,root,root) %{_libdir}/ganesha/generate-epoch.py
+%dir %{_sysconfdir}/%{name}
 
 %dir %{_libdir}/glusterfs
 
@@ -396,8 +387,8 @@ fi
 %dir %{_libdir}/glusterfs/%{version}/xlator/mount
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/mount/api.so
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/mount/fuse.so
-%dir %{_libdir}/glusterfs/%{version}/xlator/nfs
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/nfs/server.so
+#%dir %{_libdir}/glusterfs/%{version}/xlator/nfs
+#%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/nfs/server.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/performance
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/performance/*.so*
 %dir %{_libdir}/glusterfs/%{version}/xlator/protocol
@@ -486,20 +477,28 @@ fi
 %files server
 %defattr(644,root,root,755)
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/glusterfsd.vol
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/group-gluster-block
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/group-metadata-cache
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/group-nl-cache
 %attr(754,root,root) /etc/rc.d/init.d/glusterfsd
 %attr(755,root,root) %{_sbindir}/conf.py
 %attr(755,root,root) %{_sbindir}/gcron.py
 %attr(755,root,root) %{_sbindir}/gf_attach
+%attr(755,root,root) %{_sbindir}/gluster-setgfid2path
 %attr(755,root,root) %{_sbindir}/glusterd
 %attr(755,root,root) %{_sbindir}/snap_scheduler.py
+%attr(755,root,root) %{_libexecdir}/glusterfs/mount-shared-storage.sh
 %{systemdunitdir}/glusterd.service
+%{systemdunitdir}/glusterfssharedstorage.service
 %{systemdtmpfilesdir}/gluster.conf
 
+%{_mandir}/man8/gluster-setgfid2path.8*
 %{_mandir}/man8/glusterd.8*
 %dir %{_var}/lib/glusterd
 %dir %{_var}/lib/glusterd/groups
+%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/groups/gluster-block
 %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/groups/metadata-cache
+%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/groups/nl-cache
 %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/groups/virt
 %dir %{_var}/lib/glusterd/hooks
 %dir %{_var}/lib/glusterd/hooks/1
@@ -508,9 +507,14 @@ fi
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/add-brick/post/disabled-quota-root-xattr-heal.sh
 %dir %{_var}/lib/glusterd/hooks/1/add-brick/pre
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/add-brick/pre/S28Quota-enable-root-xattr-heal.sh
+%dir %{_var}/lib/glusterd/hooks/1/create
+%dir %{_var}/lib/glusterd/hooks/1/create/post
+%attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/create/post/S10selinux-label-brick.sh
 %dir %{_var}/lib/glusterd/hooks/1/delete
 %dir %{_var}/lib/glusterd/hooks/1/delete/post
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/delete/post/S57glusterfind-delete-post
+%dir %{_var}/lib/glusterd/hooks/1/delete/pre
+%attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/delete/pre/S10selinux-del-fcontext.sh
 %dir %{_var}/lib/glusterd/hooks/1/set
 %dir %{_var}/lib/glusterd/hooks/1/set/post
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/set/post/S30samba-set.sh
@@ -519,7 +523,6 @@ fi
 %dir %{_var}/lib/glusterd/hooks/1/start/post
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/start/post/S29CTDBsetup.sh
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/start/post/S30samba-start.sh
-%attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/start/post/S31ganesha-start.sh
 %dir %{_var}/lib/glusterd/hooks/1/stop
 %dir %{_var}/lib/glusterd/hooks/1/stop/pre
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/stop/pre/S29CTDB-teardown.sh
@@ -528,7 +531,7 @@ fi
 
 %files client
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/fusermount-glusterfs
+%{!?with_system_fuse:%attr(755,root,root) %{_bindir}/fusermount-glusterfs}
 %attr(755,root,root) /sbin/mount.glusterfs
 %attr(755,root,root) %{_sbindir}/gluster
 %{_mandir}/man8/gluster.8*
@@ -539,9 +542,6 @@ fi
 %dir %{_prefix}/lib/ocf/resource.d/glusterfs
 %attr(755,root,root) %{_prefix}/lib/ocf/resource.d/glusterfs/glusterd
 %attr(755,root,root) %{_prefix}/lib/ocf/resource.d/glusterfs/volume
-#%{_prefix}/lib/ocf/resource.d/heartbeat/ganesha_grace
-#%{_prefix}/lib/ocf/resource.d/heartbeat/ganesha_mon
-#%{_prefix}/lib/ocf/resource.d/heartbeat/ganesha_nfsd
 
 %files events
 %defattr(644,root,root,755)
