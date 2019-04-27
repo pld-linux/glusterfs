@@ -1,4 +1,5 @@
 # TODO:
+# - python3 module
 # - Find pidfiles killproc --pidfile ${PIDFILE} -TERM instead of kill -TERM ${PID}
 # - Check transport-ibverbs package and ibverbs bcond
 # - Add passing options from /etc/sysconfig/glusterfsd to glusterfsd
@@ -15,36 +16,37 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	3.12.9
-Release:	2
+Version:	6.1
+Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
-Source0:	https://download.gluster.org/pub/gluster/glusterfs/3.12/%{version}/glusterfs-%{version}.tar.gz
-# Source0-md5:	18f639e98e4c130365b48576cbf01aae
+Source0:	https://download.gluster.org/pub/gluster/glusterfs/6/%{version}/glusterfs-%{version}.tar.gz
+# Source0-md5:	18967c357204d4cbdd9c1731508862c6
 Source1:	glusterfsd.init
 Patch0:		%{name}-noquiet.patch
-Patch1:		%{name}-python.patch
-Patch2:		systemd.patch
-Patch3:		interpreters.patch
+Patch1:		systemd.patch
 URL:		https://www.gluster.org/
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	bison
 #BuildRequires:	cmocka-devel >= 1.0.1 for unittest
+BuildRequires:	curl-devel
 # for bd-xlator
 BuildRequires:	device-mapper-devel >= 2.02.79
 BuildRequires:	flex
 BuildRequires:	libaio-devel
 %{?with_ibverbs:BuildRequires:	libibverbs-devel >= 1.0.4}
 %{?with_ibverbs:BuildRequires:	librdmacm-devel >= 1.0.15}
+BuildRequires:	libselinux-devel
+BuildRequires:	libtirpc-devel
 BuildRequires:	libtool
 BuildRequires:	libuuid-devel
 BuildRequires:	libxml2-devel >= 1:2.6.19
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
-BuildRequires:	python >= 1:2.4
-BuildRequires:	python-devel >= 1:2.4
+BuildRequires:	python >= 1:2.6
+BuildRequires:	python-devel >= 1:2.6
 BuildRequires:	readline-devel
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.228
@@ -230,6 +232,27 @@ GlusterFS support for geo-replication.
 %description geo-replication -l pl.UTF-8
 Obsługa geo-replikacji dla GlusterFS-a.
 
+%package thin-arbiter
+Summary:	GlusterFS thin-arbiter module
+Summary(pl.UTF-8):	Moduł thin-arbiter dla GlusterFS-a
+Group:		Applications/File
+Requires:	%{name}-server = %{version}-%{release}
+
+%description thin-arbiter
+This package provides a tie-breaker functionality to GlusterFS
+replicate volume. It includes translators required to provide the
+functionality, and also few other scripts required for getting the
+setup done.
+
+This package provides the glusterfs thin-arbiter translator.
+
+%description thin-arbiter -l pl.UTF-8
+Ten pakiet dodaje funkcję dogrywki do replikacji wolumenów GlusterFS.
+Zawiera moduły tłumaczące wymagane do zapewniania tej funkcji oraz
+kilka skryptów wymaganych do konfiguracji.
+
+Ten pakiet zawiera moduł tłumaczący thin-arbiter.
+
 %package -n emacs-glusterfs-mode
 Summary:	Emacs mode to edit GlusterFS configuration
 Summary(pl.UTF-8):	Tryb Emacsa do edycji konfiguracji GlusterFS-a
@@ -260,8 +283,6 @@ Plik składni Vima do edycji konfiguracji GlusterFS-a.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %build
 %{__libtoolize}
@@ -270,8 +291,10 @@ Plik składni Vima do edycji konfiguracji GlusterFS-a.
 %{__autoheader}
 %{__automake}
 %configure \
+	PYTHON=%{__python} \
 	%{?with_system_fuse:--disable-fusermount} \
 	--disable-silent-rules \
+	--enable-gnfs \
 	%{!?with_ibverbs:--disable-ibverbs} \
 	--enable-systemtap%{!?with_systemtap:=no} \
 	--with-initdir=/etc/rc.d/init.d \
@@ -302,7 +325,6 @@ install -d $RPM_BUILD_ROOT%{_datadir}/{emacs/site-lisp,vim/syntax}
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/glusterfs/%{version}/*/*.la
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/glusterfs/%{version}/*/*/*.la
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/glusterfs/%{version}/*/*/*/*.la
 
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/glusterfs/benchmarking
 %{__rm} $RPM_BUILD_ROOT%{_libexecdir}/glusterfs/python/syncdaemon/README.md
@@ -367,6 +389,9 @@ fi
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/auth/addr.so
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/auth/login.so
 
+%dir %{_libdir}/glusterfs/%{version}/cloudsync-plugins
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/cloudsync-plugins/cloudsyncs3.so
+
 %dir %{_libdir}/glusterfs/%{version}/rpc-transport
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/rpc-transport/socket.so
 
@@ -376,32 +401,27 @@ fi
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/cluster/*.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/debug
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/debug/*.so
-%dir %{_libdir}/glusterfs/%{version}/xlator/encryption
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/encryption/*.so*
 %dir %{_libdir}/glusterfs/%{version}/xlator/features
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/features/*.so*
-%dir %{_libdir}/glusterfs/%{version}/xlator/features/glupy
-%{_libdir}/glusterfs/%{version}/xlator/features/glupy/*.py*
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/features/*.so
+%exclude %{_libdir}/glusterfs/%{version}/xlator/features/thin-arbiter.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/mgmt
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/mgmt/glusterd.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/mount
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/mount/api.so
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/mount/fuse.so
-#%dir %{_libdir}/glusterfs/%{version}/xlator/nfs
-#%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/nfs/server.so
+%dir %{_libdir}/glusterfs/%{version}/xlator/nfs
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/nfs/server.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/performance
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/performance/*.so*
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/performance/*.so
+%dir %{_libdir}/glusterfs/%{version}/xlator/playground
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/playground/template.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/protocol
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/protocol/*.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/protocol/client.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/protocol/server.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/storage
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/storage/*.so
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/storage/posix.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/system
 %attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/system/posix-acl.so
-%dir %{_libdir}/glusterfs/%{version}/xlator/testing
-%dir %{_libdir}/glusterfs/%{version}/xlator/testing/features
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/testing/features/*.so
-%dir %{_libdir}/glusterfs/%{version}/xlator/testing/performance
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/testing/performance/*.so
 
 %if "%{_libexecdir}" != "%{_libdir}"
 %dir %{_libexecdir}/glusterfs
@@ -416,6 +436,7 @@ fi
 %{_libexecdir}/glusterfs/glusterfind/__init__.py*
 %{_libexecdir}/glusterfs/glusterfind/changelogdata.py*
 %{_libexecdir}/glusterfs/glusterfind/conf.py*
+%{_libexecdir}/glusterfs/glusterfind/gfind_py2py3.py*
 %{_libexecdir}/glusterfs/glusterfind/libgfchangelog.py*
 %{_libexecdir}/glusterfs/glusterfind/main.py*
 %{_libexecdir}/glusterfs/glusterfind/utils.py*
@@ -425,6 +446,8 @@ fi
 
 %dir %{_datadir}/glusterfs
 %dir %{_datadir}/glusterfs/scripts
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/control-cpu-load.sh
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/control-mem.sh
 %attr(755,root,root) %{_datadir}/glusterfs/scripts/post-upgrade-script-for-quota.sh
 %attr(755,root,root) %{_datadir}/glusterfs/scripts/pre-upgrade-script-for-quota.sh
 %attr(755,root,root) %{_datadir}/glusterfs/scripts/stop-all-gluster-processes.sh
@@ -439,8 +462,6 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/libgfapi.so.0
 %attr(755,root,root) %{_libdir}/libgfchangelog.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgfchangelog.so.0
-%attr(755,root,root) %{_libdir}/libgfdb.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgfdb.so.0
 %attr(755,root,root) %{_libdir}/libgfrpc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgfrpc.so.0
 %attr(755,root,root) %{_libdir}/libgfxdr.so.*.*.*
@@ -452,33 +473,28 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgfapi.so
 %attr(755,root,root) %{_libdir}/libgfchangelog.so
-%attr(755,root,root) %{_libdir}/libgfdb.so
 %attr(755,root,root) %{_libdir}/libgfrpc.so
 %attr(755,root,root) %{_libdir}/libgfxdr.so
 %attr(755,root,root) %{_libdir}/libglusterfs.so
 %{_libdir}/libgfapi.la
 %{_libdir}/libgfchangelog.la
-%{_libdir}/libgfdb.la
 %{_libdir}/libgfrpc.la
 %{_libdir}/libgfxdr.la
 %{_libdir}/libglusterfs.la
 %dir %{_includedir}/glusterfs
 %{_includedir}/glusterfs/api
 %{_includedir}/glusterfs/gfchangelog
-%{_includedir}/glusterfs/gfdb
 %{_includedir}/glusterfs/rpc
 %{_includedir}/glusterfs/server
 %{_includedir}/glusterfs/*.h
 %{_pkgconfigdir}/glusterfs-api.pc
 %{_pkgconfigdir}/libgfchangelog.pc
-%{_pkgconfigdir}/libgfdb.pc
 
 %files -n python-gluster
 %defattr(644,root,root,755)
 %dir %{py_sitescriptdir}/gluster
 %{py_sitescriptdir}/gluster/*.py[co]
 %{py_sitescriptdir}/gluster/cliutils
-%{py_sitescriptdir}/gluster/glupy
 # created only when using py_build/py_install in xlators/features/glupy/src
 #%{py_sitescriptdir}/glusterfs_glupy-%{version}-py*.egg-info
 
@@ -491,9 +507,12 @@ fi
 %files server
 %defattr(644,root,root,755)
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/glusterfsd.vol
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/group-db-workload
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/group-distributed-virt
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/group-gluster-block
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/group-metadata-cache
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/group-nl-cache
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/group-samba
 %attr(754,root,root) /etc/rc.d/init.d/glusterfsd
 %attr(755,root,root) %{_sbindir}/conf.py
 %attr(755,root,root) %{_sbindir}/gcron.py
@@ -510,14 +529,18 @@ fi
 %{_mandir}/man8/glusterd.8*
 %dir %{_var}/lib/glusterd
 %dir %{_var}/lib/glusterd/groups
+%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/groups/db-workload
+%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/groups/distributed-virt
 %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/groups/gluster-block
 %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/groups/metadata-cache
 %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/groups/nl-cache
+%config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/groups/samba
 %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/groups/virt
 %dir %{_var}/lib/glusterd/hooks
 %dir %{_var}/lib/glusterd/hooks/1
 %dir %{_var}/lib/glusterd/hooks/1/add-brick
 %dir %{_var}/lib/glusterd/hooks/1/add-brick/post
+%attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/add-brick/post/S13create-subdir-mounts.sh
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/add-brick/post/disabled-quota-root-xattr-heal.sh
 %dir %{_var}/lib/glusterd/hooks/1/add-brick/pre
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/add-brick/pre/S28Quota-enable-root-xattr-heal.sh
@@ -562,20 +585,21 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/glusterfs/eventsconfig.json
 %attr(755,root,root) %{_sbindir}/gluster-eventsapi
 %attr(755,root,root) %{_sbindir}/glustereventsd
-%dir %{_libexecdir}/glusterfs/events
-%attr(755,root,root) %{_libexecdir}/glusterfs/events/glustereventsd.py
-%{_libexecdir}/glusterfs/events/__init__.py*
-%{_libexecdir}/glusterfs/events/eventsapiconf.py*
-%{_libexecdir}/glusterfs/events/eventtypes.py*
-%{_libexecdir}/glusterfs/events/gf_event.py*
-%{_libexecdir}/glusterfs/events/handlers.py*
-%{_libexecdir}/glusterfs/events/utils.py*
+%dir %{_libexecdir}/glusterfs/gfevents
+%attr(755,root,root) %{_libexecdir}/glusterfs/gfevents/glustereventsd.py
+%{_libexecdir}/glusterfs/gfevents/__init__.py*
+%{_libexecdir}/glusterfs/gfevents/eventsapiconf.py*
+%{_libexecdir}/glusterfs/gfevents/eventtypes.py*
+%{_libexecdir}/glusterfs/gfevents/gf_event.py*
+%{_libexecdir}/glusterfs/gfevents/handlers.py*
+%{_libexecdir}/glusterfs/gfevents/utils.py*
 %{_libexecdir}/glusterfs/peer_eventsapi.py*
 %{_datadir}/glusterfs/scripts/eventsdash.py
 %{systemdunitdir}/glustereventsd.service
 
 %files geo-replication
 %defattr(644,root,root,755)
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/gsyncd.conf
 %attr(755,root,root) %{_sbindir}/gfind_missing_files
 %attr(755,root,root) %{_sbindir}/gluster-georep-sshkey
 %attr(755,root,root) %{_sbindir}/gluster-mountbroker
@@ -600,6 +624,13 @@ fi
 %dir %{_var}/lib/glusterd/hooks/1/gsync-create
 %dir %{_var}/lib/glusterd/hooks/1/gsync-create/post
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/gsync-create/post/S56glusterd-geo-rep-create-post.sh
+
+%files thin-arbiter
+%defattr(644,root,root,755)
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/thin-arbiter.vol
+%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/features/thin-arbiter.so
+%attr(755,root,root) %{_datadir}/glusterfs/scripts/setup-thin-arbiter.sh
+%{systemdunitdir}/gluster-ta-volume.service
 
 %files -n emacs-glusterfs-mode
 %defattr(644,root,root,755)
