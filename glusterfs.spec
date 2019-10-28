@@ -16,12 +16,12 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	6.1
-Release:	2
+Version:	6.5
+Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
 Source0:	https://download.gluster.org/pub/gluster/glusterfs/6/%{version}/glusterfs-%{version}.tar.gz
-# Source0-md5:	18967c357204d4cbdd9c1731508862c6
+# Source0-md5:	4d2edf35fceb82642369822efd833032
 Source1:	glusterfsd.init
 Patch0:		%{name}-noquiet.patch
 Patch1:		systemd.patch
@@ -540,6 +540,7 @@ fi
 %dir %{_var}/lib/glusterd/hooks/1
 %dir %{_var}/lib/glusterd/hooks/1/add-brick
 %dir %{_var}/lib/glusterd/hooks/1/add-brick/post
+%attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/add-brick/post/S10selinux-label-brick.sh
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/add-brick/post/S13create-subdir-mounts.sh
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/add-brick/post/disabled-quota-root-xattr-heal.sh
 %dir %{_var}/lib/glusterd/hooks/1/add-brick/pre
