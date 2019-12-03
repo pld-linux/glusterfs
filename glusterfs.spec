@@ -1,5 +1,4 @@
 # TODO:
-# - python3 module
 # - Find pidfiles killproc --pidfile ${PIDFILE} -TERM instead of kill -TERM ${PID}
 # - Check transport-ibverbs package and ibverbs bcond
 # - Add passing options from /etc/sysconfig/glusterfsd to glusterfsd
@@ -16,12 +15,12 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	6.5
+Version:	6.6
 Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
 Source0:	https://download.gluster.org/pub/gluster/glusterfs/6/%{version}/glusterfs-%{version}.tar.gz
-# Source0-md5:	4d2edf35fceb82642369822efd833032
+# Source0-md5:	ab4de055a8fb8a8d3baef9953c99db91
 Source1:	glusterfsd.init
 Patch0:		%{name}-noquiet.patch
 Patch1:		systemd.patch
@@ -45,8 +44,8 @@ BuildRequires:	libuuid-devel
 BuildRequires:	libxml2-devel >= 1:2.6.19
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
-BuildRequires:	python >= 1:2.6
-BuildRequires:	python-devel >= 1:2.6
+BuildRequires:	python3 >= 1:3.2
+BuildRequires:	python3-devel >= 1:3.2
 BuildRequires:	readline-devel
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.228
@@ -134,17 +133,18 @@ This package provides the development files for GlusterFS library.
 %description devel -l pl.UTF-8
 Ten pakiet udostępnia pliki programistyczne biblioteki GlusterFS-a.
 
-%package -n python-gluster
-Summary:	Python interface to GlusterFS libraries
-Summary(pl.UTF-8):	Interfejs Pythona do bibliotek GlusterFS
+%package -n python3-gluster
+Summary:	Python 3 interface to GlusterFS libraries
+Summary(pl.UTF-8):	Interfejs Pythona 3 do bibliotek GlusterFS
 Group:		Libraries/Python
 Requires:	%{name}-libs = %{version}-%{release}
+Obsoletes:	python-gluster < 6.6
 
-%description -n python-gluster
-Python interface to GlusterFS libraries.
+%description -n python3-gluster
+Python 3 interface to GlusterFS libraries.
 
-%description -n python-gluster -l pl.UTF-8
-Interfejs Pythona do bibliotek GlusterFS.
+%description -n python3-gluster -l pl.UTF-8
+Interfejs Pythona 3 do bibliotek GlusterFS.
 
 %package transport-ibverbs
 Summary:	InfiniBand "verbs" transport plugins for GlusterFS
@@ -168,7 +168,7 @@ Requires:	%{name}-client = %{version}-%{release}
 Requires:	%{name}-common = %{version}-%{release}
 Requires(post,preun):	/sbin/chkconfig
 Requires:	rc-scripts
-Requires:	python-modules 
+Requires:	python3-modules 
 
 %description server
 This package provides the glusterfs server daemon.
@@ -207,9 +207,9 @@ Summary:	GlusterFS Events
 Summary(pl.UTF-8):	Obsługa zdarzeń dla GlusterFS-a
 Group:		Applications/File
 Requires:	%{name}-server = %{version}-%{release}
-Requires:	python-gluster = %{version}-%{release}
-Requires:	python-prettytable
-Requires:	python-requests
+Requires:	python3-gluster = %{version}-%{release}
+Requires:	python3-prettytable
+Requires:	python3-requests
 
 %description events
 GlusterFS Events.
@@ -222,8 +222,8 @@ Summary:	GlusterFS Geo-replication
 Summary(pl.UTF-8):	Geo-replikacja dla GlusterFS-a
 Group:		Applications/File
 Requires:	%{name}-server = %{version}-%{release}
-Requires:	python-gluster = %{version}-%{release}
-Requires:	python-prettytable
+Requires:	python3-gluster = %{version}-%{release}
+Requires:	python3-prettytable
 Requires:	rsync
 
 %description geo-replication
@@ -291,7 +291,7 @@ Plik składni Vima do edycji konfiguracji GlusterFS-a.
 %{__autoheader}
 %{__automake}
 %configure \
-	PYTHON=%{__python} \
+	PYTHON=%{__python3} \
 	%{?with_system_fuse:--disable-fusermount} \
 	--disable-silent-rules \
 	--enable-gnfs \
@@ -299,7 +299,6 @@ Plik składni Vima do edycji konfiguracji GlusterFS-a.
 	--enable-systemtap%{!?with_systemtap:=no} \
 	--with-initdir=/etc/rc.d/init.d \
 	--with-systemddir=%{systemdunitdir}
-
 
 %{__make} -j1
 
@@ -330,8 +329,6 @@ install -d $RPM_BUILD_ROOT%{_datadir}/{emacs/site-lisp,vim/syntax}
 %{__rm} $RPM_BUILD_ROOT%{_libexecdir}/glusterfs/python/syncdaemon/README.md
 # example, installed as /var/lib/glusterd/groups/virt
 %{__rm} $RPM_BUILD_ROOT%{_sysconfdir}/glusterfs/group-virt.example
-
-%py_postclean
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -433,14 +430,15 @@ fi
 %attr(755,root,root) %{_libexecdir}/glusterfs/glusterfind/brickfind.py
 %attr(755,root,root) %{_libexecdir}/glusterfs/glusterfind/changelog.py
 %attr(755,root,root) %{_libexecdir}/glusterfs/glusterfind/nodeagent.py
-%{_libexecdir}/glusterfs/glusterfind/__init__.py*
-%{_libexecdir}/glusterfs/glusterfind/changelogdata.py*
-%{_libexecdir}/glusterfs/glusterfind/conf.py*
-%{_libexecdir}/glusterfs/glusterfind/gfind_py2py3.py*
-%{_libexecdir}/glusterfs/glusterfind/libgfchangelog.py*
-%{_libexecdir}/glusterfs/glusterfind/main.py*
-%{_libexecdir}/glusterfs/glusterfind/utils.py*
+%{_libexecdir}/glusterfs/glusterfind/__init__.py
+%{_libexecdir}/glusterfs/glusterfind/changelogdata.py
+%{_libexecdir}/glusterfs/glusterfind/conf.py
+%{_libexecdir}/glusterfs/glusterfind/gfind_py2py3.py
+%{_libexecdir}/glusterfs/glusterfind/libgfchangelog.py
+%{_libexecdir}/glusterfs/glusterfind/main.py
+%{_libexecdir}/glusterfs/glusterfind/utils.py
 %{_libexecdir}/glusterfs/glusterfind/tool.conf
+%{_libexecdir}/glusterfs/glusterfind/__pycache__
 
 %dir %{_libexecdir}/glusterfs/python
 
@@ -490,13 +488,14 @@ fi
 %{_pkgconfigdir}/glusterfs-api.pc
 %{_pkgconfigdir}/libgfchangelog.pc
 
-%files -n python-gluster
+%files -n python3-gluster
 %defattr(644,root,root,755)
-%dir %{py_sitescriptdir}/gluster
-%{py_sitescriptdir}/gluster/*.py[co]
-%{py_sitescriptdir}/gluster/cliutils
+%dir %{py3_sitescriptdir}/gluster
+%{py3_sitescriptdir}/gluster/__init__.py
+%{py3_sitescriptdir}/gluster/__pycache__
+%{py3_sitescriptdir}/gluster/cliutils
 # created only when using py_build/py_install in xlators/features/glupy/src
-#%{py_sitescriptdir}/glusterfs_glupy-%{version}-py*.egg-info
+#%{py3_sitescriptdir}/glusterfs_glupy-%{version}-py*.egg-info
 
 %if %{with ibverbs}
 %files transport-ibverbs
@@ -588,13 +587,14 @@ fi
 %attr(755,root,root) %{_sbindir}/glustereventsd
 %dir %{_libexecdir}/glusterfs/gfevents
 %attr(755,root,root) %{_libexecdir}/glusterfs/gfevents/glustereventsd.py
-%{_libexecdir}/glusterfs/gfevents/__init__.py*
-%{_libexecdir}/glusterfs/gfevents/eventsapiconf.py*
-%{_libexecdir}/glusterfs/gfevents/eventtypes.py*
-%{_libexecdir}/glusterfs/gfevents/gf_event.py*
-%{_libexecdir}/glusterfs/gfevents/handlers.py*
-%{_libexecdir}/glusterfs/gfevents/utils.py*
-%{_libexecdir}/glusterfs/peer_eventsapi.py*
+%{_libexecdir}/glusterfs/gfevents/__init__.py
+%{_libexecdir}/glusterfs/gfevents/eventsapiconf.py
+%{_libexecdir}/glusterfs/gfevents/eventtypes.py
+%{_libexecdir}/glusterfs/gfevents/gf_event.py
+%{_libexecdir}/glusterfs/gfevents/handlers.py
+%{_libexecdir}/glusterfs/gfevents/utils.py
+%{_libexecdir}/glusterfs/gfevents/__pycache__
+%{_libexecdir}/glusterfs/peer_eventsapi.py
 %{_datadir}/glusterfs/scripts/eventsdash.py
 %{systemdunitdir}/glustereventsd.service
 
@@ -614,8 +614,8 @@ fi
 %dir %{_libexecdir}/glusterfs/gfind_missing_files
 %attr(755,root,root) %{_libexecdir}/glusterfs/gfind_missing_files/*
 %dir %{_libexecdir}/glusterfs/python/syncdaemon
-# gsyncd.py is a script, the rest probably don't require *.py
-%{_libexecdir}/glusterfs/python/syncdaemon/*.py*
+%{_libexecdir}/glusterfs/python/syncdaemon/*.py
+%{_libexecdir}/glusterfs/python/syncdaemon/__pycache__
 %attr(755,root,root) %{_datadir}/glusterfs/scripts/generate-gfid-file.sh
 %attr(755,root,root) %{_datadir}/glusterfs/scripts/get-gfid.sh
 %attr(755,root,root) %{_datadir}/glusterfs/scripts/gsync-sync-gfid
