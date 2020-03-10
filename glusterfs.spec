@@ -124,6 +124,7 @@ Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 # -lfl
 Requires:	flex
+Requires:	libtirpc-devel
 Requires:	openssl-devel
 Obsoletes:	glusterfs-static
 
