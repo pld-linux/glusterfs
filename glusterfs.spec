@@ -15,12 +15,12 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	6.6
-Release:	3
+Version:	6.10
+Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
 Source0:	https://download.gluster.org/pub/gluster/glusterfs/6/%{version}/glusterfs-%{version}.tar.gz
-# Source0-md5:	ab4de055a8fb8a8d3baef9953c99db91
+# Source0-md5:	43e4e6c017cb2ade77bc644034146215
 Source1:	glusterfsd.init
 Patch0:		%{name}-noquiet.patch
 Patch1:		systemd.patch
