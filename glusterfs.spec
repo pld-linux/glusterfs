@@ -13,12 +13,12 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	8.6
+Version:	9.5
 Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
-Source0:	https://download.gluster.org/pub/gluster/glusterfs/8/%{version}/glusterfs-%{version}.tar.gz
-# Source0-md5:	a48b6730e338eb757c0a12b177f1545d
+Source0:	https://download.gluster.org/pub/gluster/glusterfs/9/%{version}/glusterfs-%{version}.tar.gz
+# Source0-md5:	9af057c55f613c39d7d992eedfeaab0d
 Source1:	glusterfsd.init
 Patch1:		systemd.patch
 URL:		https://www.gluster.org/
@@ -35,6 +35,7 @@ BuildRequires:	libaio-devel
 BuildRequires:	libselinux-devel
 BuildRequires:	libtirpc-devel
 BuildRequires:	libtool
+BuildRequires:	liburing-devel
 BuildRequires:	libuuid-devel
 BuildRequires:	libxml2-devel >= 1:2.6.19
 BuildRequires:	openssl-devel
