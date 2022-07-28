@@ -13,12 +13,12 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	9.5
-Release:	2
+Version:	10.2
+Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
-Source0:	https://download.gluster.org/pub/gluster/glusterfs/9/%{version}/glusterfs-%{version}.tar.gz
-# Source0-md5:	9af057c55f613c39d7d992eedfeaab0d
+Source0:	https://download.gluster.org/pub/gluster/glusterfs/10/%{version}/glusterfs-%{version}.tar.gz
+# Source0-md5:	05affccc2f17d136a2587a32524c542e
 Source1:	glusterfsd.init
 Patch1:		systemd.patch
 URL:		https://www.gluster.org/
@@ -123,7 +123,7 @@ Requires:	%{name}-libs = %{version}-%{release}
 Requires:	flex
 Requires:	libtirpc-devel
 Requires:	openssl-devel
-Obsoletes:	glusterfs-static
+Obsoletes:	glusterfs-static < 1.3.10-2
 
 %description devel
 This package provides the development files for GlusterFS library.
@@ -614,7 +614,7 @@ fi
 %attr(755,root,root) %{_libexecdir}/glusterfs/scripts/gsync-sync-gfid
 %attr(755,root,root) %{_libexecdir}/glusterfs/scripts/gsync-upgrade.sh
 %attr(755,root,root) %{_libexecdir}/glusterfs/scripts/schedule_georep.py
-%attr(755,root,root) %{_libexecdir}/glusterfs/scripts/slave-upgrade.sh
+%attr(755,root,root) %{_libexecdir}/glusterfs/scripts/secondary-upgrade.sh
 %dir %{_var}/lib/glusterd/hooks/1/gsync-create
 %dir %{_var}/lib/glusterd/hooks/1/gsync-create/post
 %attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_var}/lib/glusterd/hooks/1/gsync-create/post/S56glusterd-geo-rep-create-post.sh
