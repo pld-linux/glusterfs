@@ -33,6 +33,7 @@ BuildRequires:	device-mapper-devel >= 2.02.79
 BuildRequires:	flex
 BuildRequires:	libaio-devel
 BuildRequires:	libselinux-devel
+BuildRequires:	libtcmalloc-devel
 BuildRequires:	libtirpc-devel
 BuildRequires:	libtool
 BuildRequires:	liburing-devel
