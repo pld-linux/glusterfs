@@ -13,13 +13,14 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	10.2
+Version:	10.3
 Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
 Source0:	https://download.gluster.org/pub/gluster/glusterfs/10/%{version}/glusterfs-%{version}.tar.gz
-# Source0-md5:	05affccc2f17d136a2587a32524c542e
+# Source0-md5:	9c795c8479f244e81bca5b2499a480cc
 Source1:	glusterfsd.init
+Patch0:		%{name}-glibc.patch
 Patch1:		systemd.patch
 URL:		https://www.gluster.org/
 BuildRequires:	acl-devel
@@ -39,7 +40,7 @@ BuildRequires:	libtool
 BuildRequires:	liburing-devel
 BuildRequires:	libuuid-devel
 BuildRequires:	libxml2-devel >= 1:2.6.19
-BuildRequires:	openssl-devel
+BuildRequires:	openssl-devel >= 1.1
 BuildRequires:	pkgconfig
 BuildRequires:	python3 >= 1:3.2
 BuildRequires:	python3-devel >= 1:3.2
@@ -266,6 +267,7 @@ Plik składni Vima do edycji konfiguracji GlusterFS-a.
 
 %prep
 %setup -q
+%patch0 -p1
 %patch1 -p1
 
 %build

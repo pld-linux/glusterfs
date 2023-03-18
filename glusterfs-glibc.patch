@@ -1,0 +1,11 @@
+--- glusterfs-10.3/libglusterfs/src/glusterfs/compat-io_uring.h.orig	2022-09-20 12:24:29.627820825 +0200
++++ glusterfs-10.3/libglusterfs/src/glusterfs/compat-io_uring.h	2023-03-17 21:47:37.793704259 +0100
+@@ -11,6 +11,8 @@
+ #ifndef __COMPAT_IO_URING_H__
+ #define __COMPAT_IO_URING_H__
+ 
++#include <sys/mount.h>
++#define _LINUX_MOUNT_H
+ #include <linux/io_uring.h>
+ 
+ /* io_uring setup flags. */
