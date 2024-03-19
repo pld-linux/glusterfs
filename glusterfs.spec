@@ -13,12 +13,12 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	10.4
+Version:	11.1
 Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
-Source0:	https://download.gluster.org/pub/gluster/glusterfs/10/%{version}/glusterfs-%{version}.tar.gz
-# Source0-md5:	e6501963d36034649cf7edfe714723de
+Source0:	https://download.gluster.org/pub/gluster/glusterfs/11/%{version}/glusterfs-%{version}.tar.gz
+# Source0-md5:	7e290a50026752f435f694651687e0f2
 Source1:	glusterfsd.init
 Patch0:		%{name}-glibc.patch
 Patch1:		systemd.patch
@@ -26,6 +26,7 @@ URL:		https://www.gluster.org/
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
+BuildRequires:	bash-completion-devel >= 1:2.0
 BuildRequires:	bison
 #BuildRequires:	cmocka-devel >= 1.0.1 for unittest
 BuildRequires:	curl-devel
@@ -36,7 +37,7 @@ BuildRequires:	libaio-devel
 BuildRequires:	libselinux-devel
 BuildRequires:	libtcmalloc-devel
 BuildRequires:	libtirpc-devel
-BuildRequires:	libtool
+BuildRequires:	libtool >= 2:2
 BuildRequires:	liburing-devel
 BuildRequires:	libuuid-devel
 BuildRequires:	libxml2-devel >= 1:2.6.19
@@ -47,7 +48,7 @@ BuildRequires:	python3-devel >= 1:3.2
 BuildRequires:	readline-devel
 BuildRequires:	rpcsvc-proto
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.228
+BuildRequires:	rpmbuild(macros) >= 1.673
 BuildRequires:	sed >= 4.0
 BuildRequires:	sqlite3-devel >= 3
 BuildRequires:	userspace-rcu-devel >= 0.8
@@ -450,8 +451,6 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/libgfrpc.so.0
 %attr(755,root,root) %{_libdir}/libgfxdr.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgfxdr.so.0
-%attr(755,root,root) %{_libdir}/libglusterd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libglusterd.so.0
 %attr(755,root,root) %{_libdir}/libglusterfs.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libglusterfs.so.0
 
@@ -461,13 +460,11 @@ fi
 %attr(755,root,root) %{_libdir}/libgfchangelog.so
 %attr(755,root,root) %{_libdir}/libgfrpc.so
 %attr(755,root,root) %{_libdir}/libgfxdr.so
-%attr(755,root,root) %{_libdir}/libglusterd.so
 %attr(755,root,root) %{_libdir}/libglusterfs.so
 %{_libdir}/libgfapi.la
 %{_libdir}/libgfchangelog.la
 %{_libdir}/libgfrpc.la
 %{_libdir}/libgfxdr.la
-%{_libdir}/libglusterd.la
 %{_libdir}/libglusterfs.la
 %dir %{_includedir}/glusterfs
 %{_includedir}/glusterfs/api
@@ -555,6 +552,7 @@ fi
 %{!?with_system_fuse:%attr(755,root,root) %{_bindir}/fusermount-glusterfs}
 %attr(755,root,root) /sbin/mount.glusterfs
 %attr(755,root,root) %{_sbindir}/gluster
+%{bash_compdir}/gluster.bash
 %{_mandir}/man8/gluster.8*
 %{_mandir}/man8/mount.glusterfs.8*
 
