@@ -268,8 +268,8 @@ Plik składni Vima do edycji konfiguracji GlusterFS-a.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
+%patch -P 0 -p1
+%patch -P 1 -p1
 
 %build
 %{__libtoolize}
