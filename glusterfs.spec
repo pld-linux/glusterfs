@@ -22,6 +22,7 @@ Source0:	https://download.gluster.org/pub/gluster/glusterfs/11/%{version}/gluste
 Source1:	glusterfsd.init
 Patch0:		%{name}-glibc.patch
 Patch1:		systemd.patch
+Patch2:		%{name}-atomic32.patch
 URL:		https://www.gluster.org/
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.50
@@ -270,6 +271,7 @@ Plik składni Vima do edycji konfiguracji GlusterFS-a.
 %setup -q
 %patch -P 0 -p1
 %patch -P 1 -p1
+%patch -P 2 -p1
 
 %build
 %{__libtoolize}

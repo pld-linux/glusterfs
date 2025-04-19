@@ -1,0 +1,44 @@
+urcu atomics don't support 64-bit operations on 32-bit architectures.
+Use gcc atomics instead.
+--- glusterfs-11.1/libglusterfs/src/glusterfs/gf-io.h.orig	2023-11-06 16:24:25.468026832 +0100
++++ glusterfs-11.1/libglusterfs/src/glusterfs/gf-io.h	2025-04-19 20:27:08.229794913 +0200
+@@ -358,7 +358,11 @@ gf_io_worker_get(void)
+ static inline uint64_t
+ gf_io_reserve(uint32_t nr)
+ {
++#ifdef __LP64__
+     return uatomic_add_return(&gf_io.op_seq, nr) - nr;
++#else
++    return __atomic_fetch_add(&gf_io.op_seq, nr, __ATOMIC_SEQ_CST);
++#endif
+ }
+ 
+ /* Wait for a particular entry in gf_io.data_map to be available. */
+--- glusterfs-11.1/libglusterfs/src/gf-io-legacy.c.orig	2023-11-06 16:24:25.463026817 +0100
++++ glusterfs-11.1/libglusterfs/src/gf-io-legacy.c	2025-04-19 20:47:18.867788487 +0200
+@@ -45,7 +45,11 @@ gf_io_legacy_cbk(uint64_t id, int32_t re
+ {
+     uint64_t seq;
+ 
++#ifdef __LP64__
+     seq = uatomic_add_return(&gf_io_legacy_seq, 1) - 1;
++#else
++    seq = __atomic_fetch_add(&gf_io_legacy_seq, 1, __ATOMIC_SEQ_CST);
++#endif
+ 
+     gf_io_cbk(NULL, seq, id, res);
+ }
+--- glusterfs-11.1/libglusterfs/src/gf-io-uring.c.orig	2023-11-06 16:24:25.463026817 +0100
++++ glusterfs-11.1/libglusterfs/src/gf-io-uring.c	2025-04-19 20:51:05.609282999 +0200
+@@ -665,7 +665,11 @@ gf_io_uring_sq_consume_shared(uint32_t t
+     idx = tail & gf_io_uring.sq.mask;
+     nr = gf_io_uring_sq_length(idx);
+     if (nr != 0) {
++#ifdef __LP64__
+         nr = (uint32_t)uatomic_xchg(&GF_IO_URING_SQE_COUNT(idx), 0);
++#else
++        nr = (uint32_t)__atomic_exchange_n(&GF_IO_URING_SQE_COUNT(idx), 0, __ATOMIC_SEQ_CST);
++#endif
+     }
+ 
+     return nr;
