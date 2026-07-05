@@ -13,12 +13,14 @@
 Summary:	Clustered File Storage that can scale to peta bytes
 Summary(pl.UTF-8):	Klastrowy system przechowywania plików skalujący się do petabajtów
 Name:		glusterfs
-Version:	11.1
-Release:	5
+Version:	11.2
+Release:	1
 License:	LGPL v3+ or GPL v2 (libraries), GPL v3+ (programs)
 Group:		Applications/System
-Source0:	https://download.gluster.org/pub/gluster/glusterfs/11/%{version}/glusterfs-%{version}.tar.gz
-# Source0-md5:	7e290a50026752f435f694651687e0f2
+#Source0:	https://download.gluster.org/pub/gluster/glusterfs/11/%{version}/glusterfs-%{version}.tar.gz
+#Source0Download: https://github.com/gluster/glusterfs/releases
+Source0:	https://github.com/gluster/glusterfs/archive/v%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	774b78c834e6160f86e01d97a95e7eb2
 Source1:	glusterfsd.init
 Patch0:		%{name}-glibc.patch
 Patch1:		systemd.patch
@@ -53,6 +55,7 @@ BuildRequires:	rpmbuild(macros) >= 1.673
 BuildRequires:	sed >= 4.0
 BuildRequires:	sqlite3-devel >= 3
 BuildRequires:	userspace-rcu-devel >= 0.8
+BuildRequires:	xxHash-devel
 BuildRequires:	zlib-devel >= 1.2.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -369,43 +372,43 @@ fi
 
 %dir %{_libdir}/glusterfs/%{version}
 %dir %{_libdir}/glusterfs/%{version}/auth
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/auth/addr.so
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/auth/login.so
+%{_libdir}/glusterfs/%{version}/auth/addr.so
+%{_libdir}/glusterfs/%{version}/auth/login.so
 
 %dir %{_libdir}/glusterfs/%{version}/cloudsync-plugins
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/cloudsync-plugins/cloudsynccvlt.so
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/cloudsync-plugins/cloudsyncs3.so
+%{_libdir}/glusterfs/%{version}/cloudsync-plugins/cloudsynccvlt.so
+%{_libdir}/glusterfs/%{version}/cloudsync-plugins/cloudsyncs3.so
 
 %dir %{_libdir}/glusterfs/%{version}/rpc-transport
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/rpc-transport/socket.so
+%{_libdir}/glusterfs/%{version}/rpc-transport/socket.so
 
 %dir %{_libdir}/glusterfs/%{version}/xlator
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/meta.so
+%{_libdir}/glusterfs/%{version}/xlator/meta.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/cluster
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/cluster/*.so
+%{_libdir}/glusterfs/%{version}/xlator/cluster/*.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/debug
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/debug/*.so
+%{_libdir}/glusterfs/%{version}/xlator/debug/*.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/features
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/features/*.so
+%{_libdir}/glusterfs/%{version}/xlator/features/*.so
 %exclude %{_libdir}/glusterfs/%{version}/xlator/features/thin-arbiter.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/mgmt
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/mgmt/glusterd.so
+%{_libdir}/glusterfs/%{version}/xlator/mgmt/glusterd.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/mount
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/mount/api.so
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/mount/fuse.so
+%{_libdir}/glusterfs/%{version}/xlator/mount/api.so
+%{_libdir}/glusterfs/%{version}/xlator/mount/fuse.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/nfs
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/nfs/server.so
+%{_libdir}/glusterfs/%{version}/xlator/nfs/server.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/performance
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/performance/*.so
+%{_libdir}/glusterfs/%{version}/xlator/performance/*.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/playground
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/playground/template.so
+%{_libdir}/glusterfs/%{version}/xlator/playground/template.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/protocol
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/protocol/client.so
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/protocol/server.so
+%{_libdir}/glusterfs/%{version}/xlator/protocol/client.so
+%{_libdir}/glusterfs/%{version}/xlator/protocol/server.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/storage
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/storage/posix.so
+%{_libdir}/glusterfs/%{version}/xlator/storage/posix.so
 %dir %{_libdir}/glusterfs/%{version}/xlator/system
-%attr(755,root,root) %{_libdir}/glusterfs/%{version}/xlator/system/posix-acl.so
+%{_libdir}/glusterfs/%{version}/xlator/system/posix-acl.so
 
 %if "%{_libexecdir}" != "%{_libdir}"
 %dir %{_libexecdir}/glusterfs
@@ -445,24 +448,24 @@ fi
 
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libgfapi.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgfapi.so.0
-%attr(755,root,root) %{_libdir}/libgfchangelog.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgfchangelog.so.0
-%attr(755,root,root) %{_libdir}/libgfrpc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgfrpc.so.0
-%attr(755,root,root) %{_libdir}/libgfxdr.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgfxdr.so.0
-%attr(755,root,root) %{_libdir}/libglusterfs.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libglusterfs.so.0
+%{_libdir}/libgfapi.so.*.*.*
+%ghost %{_libdir}/libgfapi.so.0
+%{_libdir}/libgfchangelog.so.*.*.*
+%ghost %{_libdir}/libgfchangelog.so.0
+%{_libdir}/libgfrpc.so.*.*.*
+%ghost %{_libdir}/libgfrpc.so.0
+%{_libdir}/libgfxdr.so.*.*.*
+%ghost %{_libdir}/libgfxdr.so.0
+%{_libdir}/libglusterfs.so.*.*.*
+%ghost %{_libdir}/libglusterfs.so.0
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libgfapi.so
-%attr(755,root,root) %{_libdir}/libgfchangelog.so
-%attr(755,root,root) %{_libdir}/libgfrpc.so
-%attr(755,root,root) %{_libdir}/libgfxdr.so
-%attr(755,root,root) %{_libdir}/libglusterfs.so
+%{_libdir}/libgfapi.so
+%{_libdir}/libgfchangelog.so
+%{_libdir}/libgfrpc.so
+%{_libdir}/libgfxdr.so
+%{_libdir}/libglusterfs.so
 %{_libdir}/libgfapi.la
 %{_libdir}/libgfchangelog.la
 %{_libdir}/libgfrpc.la
@@ -551,7 +554,9 @@ fi
 
 %files client
 %defattr(644,root,root,755)
-%{!?with_system_fuse:%attr(755,root,root) %{_bindir}/fusermount-glusterfs}
+%if %{without system_fuse}
+%attr(755,root,root) %{_bindir}/fusermount-glusterfs
+%endif
 %attr(755,root,root) /sbin/mount.glusterfs
 %attr(755,root,root) %{_sbindir}/gluster
 %{bash_compdir}/gluster.bash
